@@ -2,8 +2,12 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 
-// DASHBOARD
 
+// DASHBOARD
+// render - dashboard
+const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
+const DashboardAnalytics = Loadable(lazy(() => import('pages/dashboard/analytics')));
+const DashboardFinance = Loadable(lazy(() => import('pages/dashboard/finance')));
 // PMS
 const BookingPage = Loadable(lazy(() => import('pages/pms/booking/create')));
 const BookingCalendar = Loadable(lazy(() => import('pages/pms/booking/calendar')));
@@ -15,7 +19,24 @@ const MainRoutes = {
   path: '/',
   element: <DashboardLayout />,
   children: [
-   
+    
+        {
+          path: 'dashboard',
+          children: [
+            {
+              path: 'default',
+              element: <DashboardDefault />
+            },
+            {
+              path: 'analytics',
+              element: <DashboardAnalytics />
+            },
+            {
+              path: 'finance',
+              element: <DashboardFinance />
+            }
+          ]
+        },
     /* ================= PMS ================= */
     {
       path: 'pms',
