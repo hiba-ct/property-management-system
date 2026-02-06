@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CardActions from '@mui/material/CardActions';
 import Divider from '@mui/material/Divider';
+import { useTheme } from '@mui/material/styles';
 import MainCard from './MainCard';
 import { Add, Book } from 'iconsax-reactjs';
 
@@ -13,9 +14,9 @@ interface IPage {
   Form: React.ElementType;
   List: React.ElementType;
   name: string;
-  mode?: 'toggle' | 'split'; // toggle = Page style, split = Page style
-  formWidth?: number;        // used in split mode
-  listWidth?: number;        // used in split mode
+  mode?: 'toggle' | 'split';
+  formWidth?: number;
+  listWidth?: number;
 }
 
 const Page = ({
@@ -27,39 +28,42 @@ const Page = ({
   listWidth = 8
 }: IPage) => {
   const [showTable, setShowTable] = useState(false);
+  const theme = useTheme();
+
+  // ✅ Reusable header style
+  const headerSX = {
+    position: 'sticky',
+    top: HEADER_HEIGHT,
+    zIndex: 1,
+    backgroundColor: theme.palette.primary.darker,
+    color: theme.palette.primary.contrastText,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    boxShadow: '0 2px 6px rgba(25, 16, 17, 0.08)'
+  };
+
+  const headerContentSX = {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    px: 2,
+    py: 1.5
+  };
 
   if (mode === 'toggle') {
-    // --- Page style ---
     return (
       <Grid container spacing={GRID_COMMON_SPACING}>
         <Grid size={12}>
           <MainCard content={false} sx={{ overflow: 'visible' }}>
-            <CardActions
-              sx={{
-                position: 'sticky',
-                top: HEADER_HEIGHT,
-                zIndex: 1,
-                borderBottom: '1px solid',
-                borderBottomColor: 'divider',
-                borderTopLeftRadius: 12,
-                borderTopRightRadius: 12,
-                marginBottom: -2
-              }}
-            >
-              <Stack
-                direction="row"
-                sx={{
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  width: 1
-                }}
-              >
-                <Typography variant="h5" sx={{ m: 0, pl: 1.5 }}>
+            <CardActions sx={headerSX}>
+              <Stack direction="row" sx={{ ...headerContentSX, width: 1 }}>
+                <Typography variant="h5" fontWeight={600}>
                   {showTable ? `${name} List` : `Add ${name}`}
                 </Typography>
-                <Stack direction="row" sx={{ gap: 1, px: 1.5, py: 0 }}>
+
+                <Stack direction="row" spacing={1}>
                   <Button
                     variant="contained"
+                    color="secondary"
                     startIcon={<Add />}
                     size="small"
                     onClick={() => setShowTable(false)}
@@ -68,6 +72,7 @@ const Page = ({
                   </Button>
                   <Button
                     variant="contained"
+                    color="secondary"
                     startIcon={<Book />}
                     size="small"
                     onClick={() => setShowTable(true)}
@@ -77,6 +82,7 @@ const Page = ({
                 </Stack>
               </Stack>
             </CardActions>
+
             {showTable ? <List /> : <Form />}
           </MainCard>
         </Grid>
@@ -84,30 +90,14 @@ const Page = ({
     );
   }
 
-  // --- Page style (split mode) ---
+  // --- Split Mode ---
   return (
     <Grid container spacing={GRID_COMMON_SPACING}>
-      {/* Left side - Form */}
+      {/* Form */}
       <Grid size={{ xs: 12, lg: formWidth }}>
         <MainCard content={false} sx={{ overflow: 'visible' }}>
-          <Stack
-            direction="row"
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderBottom: '1px solid',
-              borderBottomColor: 'divider',
-              px: 2,
-              py: 1.5,
-              position: 'sticky',
-              top: HEADER_HEIGHT,
-              bgcolor: 'background.paper',
-              borderTopLeftRadius: 12,
-              borderTopRightRadius: 12,
-              zIndex: 1
-            }}
-          >
-            <Typography variant="h5" sx={{ m: 0, pl: 1.5 }}>
+          <Stack direction="row" sx={{ ...headerSX, ...headerContentSX }}>
+            <Typography variant="h5" fontWeight={600}>
               Add {name}
             </Typography>
           </Stack>
@@ -118,27 +108,11 @@ const Page = ({
         </MainCard>
       </Grid>
 
-      {/* Right side - List */}
+      {/* List */}
       <Grid size={{ xs: 12, lg: listWidth }}>
         <MainCard content={false} sx={{ overflow: 'visible' }}>
-          <Stack
-            direction="row"
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderBottom: '1px solid',
-              borderBottomColor: 'divider',
-              px: 2,
-              py: 1.5,
-              position: 'sticky',
-              top: HEADER_HEIGHT,
-              bgcolor: 'background.paper',
-              borderTopLeftRadius: 12,
-              borderTopRightRadius: 12,
-              zIndex: 1
-            }}
-          >
-            <Typography variant="h5" sx={{ m: 0, pl: 1.5 }}>
+          <Stack direction="row" sx={{ ...headerSX, ...headerContentSX }}>
+            <Typography variant="h5" fontWeight={600}>
               {name} List
             </Typography>
           </Stack>

@@ -18,7 +18,7 @@ const AuthBackground = () => {
         top: 0,
         right: 0,
         overflow: 'hidden',
-          backgroundColor: '#561741ff',
+          backgroundColor: '#3b082dff',
         // '&:before': {
         //   content: `" "`,
         //   width: 300,

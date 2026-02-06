@@ -1,6 +1,7 @@
 
+import Page from 'components/Page';
 import BookingForm from './Form';
-import Page from 'components/Page.tsx';
+
 import BookingList from './List';
 
 

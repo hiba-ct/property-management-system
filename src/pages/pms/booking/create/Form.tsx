@@ -40,7 +40,7 @@ export default function BookingForm() {
         <CardContent>
           <Grid container spacing={2}>
             {/* Guest Name */}
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12,md:6 }}>
               <CommonTextInput
                 formik={formik}
                 name="guestName"
@@ -49,7 +49,7 @@ export default function BookingForm() {
             </Grid>
 
             {/* Mobile */}
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12,md:6 }}>
               <CommonTextInput
                 formik={formik}
                 name="mobile"
@@ -58,7 +58,7 @@ export default function BookingForm() {
             </Grid>
 
             {/* Check In */}
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12,md:6 }}>
               <CommonTextInput
                 formik={formik}
                 name="checkIn"
@@ -68,7 +68,7 @@ export default function BookingForm() {
             </Grid>
 
             {/* Check Out */}
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12,md:6 }}>
               <CommonTextInput
                 formik={formik}
                 name="checkOut"
@@ -78,7 +78,7 @@ export default function BookingForm() {
             </Grid>
 
             {/* Room Type */}
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12,md:6 }}>
               <CommonSelectInput
                 formik={formik}
                 name="roomType"
@@ -92,7 +92,7 @@ export default function BookingForm() {
             </Grid>
 
             {/* Room No */}
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12,md:6 }}>
               <CommonTextInput
                 formik={formik}
                 name="roomNo"
@@ -101,7 +101,7 @@ export default function BookingForm() {
             </Grid>
 
             {/* Payment Mode */}
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12,md:6 }}>
               <CommonSelectInput
                 formik={formik}
                 name="paymentMode"

@@ -47,14 +47,21 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
 
   const Icon = item.icon!;
   const itemIcon = item.icon ? (
-    <Icon
-      variant="Bulk"
-      size={drawerOpen ? 20 : 22}
-      style={{ ...(menuOrientation === MenuOrientation.HORIZONTAL && isParents && { fontSize: 20, stroke: '1.5' }) }}
-    />
-  ) : (
-    false
-  );
+  <Icon
+    variant="Bulk"
+    size={drawerOpen ? 20 : 22}
+    color={item.iconColor}
+    style={{
+      ...(menuOrientation === MenuOrientation.HORIZONTAL && isParents && {
+        fontSize: 20,
+        stroke: '1.5'
+      })
+    }}
+  />
+) : (
+  false
+);
+
 
   const { pathname } = useLocation();
   const isSelected = !!matchPath({ path: item?.link ? item.link : item.url!, end: false }, pathname);
@@ -105,30 +112,41 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
           >
             {itemIcon && (
               <ListItemIcon
-                sx={(theme) => ({
-                  minWidth: 38,
-                  color: 'secondary.main',
-                  ...theme.applyStyles('dark', { color: 'secondary.400' }),
-                  ...(isSelected && { color: iconSelectedColor }),
-                  ...(!drawerOpen &&
-                    level === 1 && {
-                      borderRadius: 1,
-                      width: 46,
-                      height: 46,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      '&:hover': { bgcolor: 'secondary.200', ...theme.applyStyles('dark', { bgcolor: 'divider' }) }
-                    }),
-                  ...(!drawerOpen &&
-                    isSelected && {
-                      bgcolor: 'primary.lighter',
-                      '&:hover': { bgcolor: 'primary.lighter' },
-                      ...theme.applyStyles('dark', { bgcolor: 'divider', '&:hover': { bgcolor: 'divider' } })
-                    })
-                })}
-              >
-                {itemIcon}
-              </ListItemIcon>
+  sx={(theme) => ({
+    minWidth: 38,
+    color: item.iconColor || theme.palette.secondary.main,
+    ...theme.applyStyles('dark', {
+      color: item.iconColor || theme.palette.secondary[400]
+    }),
+    ...(isSelected && {
+      color: iconSelectedColor
+    }),
+    ...(!drawerOpen &&
+      level === 1 && {
+        borderRadius: 1,
+        width: 46,
+        height: 46,
+        alignItems: 'center',
+        justifyContent: 'center',
+        '&:hover': {
+          bgcolor: 'secondary.200',
+          ...theme.applyStyles('dark', { bgcolor: 'divider' })
+        }
+      }),
+    ...(!drawerOpen &&
+      isSelected && {
+        bgcolor: 'primary.lighter',
+        '&:hover': { bgcolor: 'primary.lighter' },
+        ...theme.applyStyles('dark', {
+          bgcolor: 'divider',
+          '&:hover': { bgcolor: 'divider' }
+        })
+      })
+  })}
+>
+  {itemIcon}
+</ListItemIcon>
+
             )}
 
             {!itemIcon && drawerOpen && (
@@ -279,6 +297,8 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
             />
           )}
         </ListItemButton>
+
+        
       )}
     </>
   );

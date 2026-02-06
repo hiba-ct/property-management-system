@@ -1,6 +1,14 @@
-import { useParams } from 'react-router-dom';
+import Page from 'components/Page';
+import BookingDetailsForm from './Form';
+import BookingDetailsList from './List';
 
 export default function BookingDetailsPage() {
-  const { id } = useParams();
-  return <div>Booking Details : {id}</div>;
+  return (
+    <Page
+      Form={BookingDetailsForm}
+      List={BookingDetailsList}
+      name="Booking Details"
+      mode="toggle"
+    />
+  );
 }
