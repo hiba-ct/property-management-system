@@ -16,6 +16,8 @@ import {
   AddSquare
 } from 'iconsax-reactjs';
 
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+
 import { NavItemType } from 'types/menu';
 
 /* ================= ICON MAP ================= */
@@ -40,7 +42,11 @@ const icons = {
   housekeeping: Broom,
 
   reports: Chart,
-  settings: Setting2
+  settings: Setting2,
+
+  guestDetails: Profile2User,
+
+  pending: PendingActionsIcon // ✅ MUI icon
 };
 
 /* ================= PROPERTY MANAGEMENT ================= */
@@ -50,72 +56,131 @@ const propertyManagement: NavItemType = {
   title: 'Property Management',
   type: 'group',
   children: [
-    /* ================= BOOKING MANAGEMENT ================= */
+    /* ================= BOOKING ================= */
     {
       id: 'booking',
       title: 'Booking Management',
       type: 'collapse',
       icon: icons.booking,
-     children: [
-  {
-    id: 'booking-create',
-    title: 'Create Booking',
-    type: 'item',
-    icon: icons.create,
-    iconColor: '#2E7D32',   // ✅ Green (Create / Add)
-    url: '/pms/bookings/create'
-  },
-  {
-    id: 'booking-calendar',
-    title: 'Booking Calendar',
-    type: 'item',
-    icon: icons.calendar,
-    iconColor: '#1565C0',   // 📅 Blue (Calendar / Schedule)
-    url: '/pms/bookings/calendar'
-  },
-  {
-    id: 'booking-details',
-    title: 'Booking Details',
-    type: 'item',
-    icon: icons.document,
-    iconColor: '#8D3C4A',   // 📄 Maroon (Details / Record)
-    url: '/pms/bookings/details'
-  }
-]
-
+      children: [
+        {
+          id: 'booking-create',
+          title: 'Create Booking',
+          type: 'item',
+          icon: icons.create,
+          iconColor: '#2E7D32',
+          url: '/pms/bookings/create'
+        },
+        {
+          id: 'booking-calendar',
+          title: 'Booking Calendar',
+          type: 'item',
+          icon: icons.calendar,
+          iconColor: '#1565C0',
+          url: '/pms/bookings/calendar'
+        },
+        {
+          id: 'booking-details',
+          title: 'Booking Details',
+          type: 'item',
+          icon: icons.document,
+          iconColor: '#8D3C4A',
+          url: '/pms/bookings/details'
+        }
+      ]
     },
 
     /* ================= ROOM & INVENTORY ================= */
     {
       id: 'room-inventory',
-      title: 'Room & Inventory Management',
+      title: 'Room & Inventory ',
       type: 'collapse',
       icon: icons.rooms,
       children: [
+         {
+          id: 'rooms-list',
+          title: 'Create Rooms',
+          type: 'item',
+          icon: icons.create,
+          iconColor: '#2E7D32',
+          url: '/pms/rooms/create'
+        },
         {
           id: 'room-types',
           title: 'Room Types',
           type: 'item',
           icon: icons.property,
-          iconColor: '#8D3C4A', // maroon
-
+          iconColor: '#8D3C4A',
           url: '/pms/rooms/types'
         },
+       
         {
-          id: 'rooms-list',
-          title: 'Create Rooms',
-          type: 'item',
-          icon: icons.create,
-          iconColor: '#2E7D32', // green
-          url: '/pms/rooms/create'
-        },
-         {
           id: 'rooms-cleaning',
           title: 'Cleaning Status',
           type: 'item',
           icon: icons.housekeeping,
-          iconColor: '#F57C00', // orange
+          iconColor: '#F57C00',
           url: '/pms/rooms/cleaning'
+        }
+      ]
+    },
+
+    /* ================= GUEST MANAGEMENT ================= */
+    {
+      id: 'guest-management',
+      title: 'Guest Management',
+      type: 'collapse',
+      icon: icons.guests,
+      children: [
+        {
+          id: 'guest-create',
+          title: 'Create Guest',
+          type: 'item',
+          icon: icons.create,
+          iconColor: '#2E7D32',
+          url: '/pms/guests/create'
+        },
+        {
+          id: 'guest-feedback',
+          title: 'Guest Feedback',
+          type: 'item',
+          icon: icons.document,
+          iconColor: '#1565C0',
+          url: '/pms/guests/feedback'
+        }
+      ]
+    },
+
+    /* ================= BILLING & PAYMENT ================= */
+    {
+      id: 'payment',
+      title: 'Billing & Payment ',
+      type: 'collapse',
+      icon: icons.payment,
+      children: [
+        {
+          id: 'payment-create',
+          title: 'Add Payment',
+          type: 'item',
+          icon: icons.create,
+          iconColor: '#2E7D32',
+          url: '/pms/billing/create'
+        },
+        {
+          id: 'pending-payments',
+          title: 'Pending Payments',
+          type: 'item',
+          icon: icons.pending, // ✅ MUI icon
+          iconColor: '#F57C00', // 🟠 Pending
+          url: '/pms/billing/pending'
+        },
+         {
+          id: 'invoice',
+          title: 'Invoice',
+          type: 'item',
+          icon: icons.invoice, // ✅ MUI icon
+          iconColor: '#1565C0', 
+          url: '/pms/billing/invoice'
         }
       ]
     }

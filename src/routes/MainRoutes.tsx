@@ -8,6 +8,13 @@ import DashboardLayout from 'layout/Dashboard';
 
 
 
+
+
+
+
+
+
+
 // DASHBOARD
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
@@ -22,6 +29,18 @@ const BookingDetails = Loadable(lazy(() => import('pages/pms/booking/details')))
 const RoomTypesPage = Loadable(lazy(() => import('pages/rooms/types')));
 const RoomsPage = Loadable(lazy(() => import('pages/rooms/create')));
 const RoomsCleaningPage = Loadable(lazy(() => import('pages/rooms/cleaning')));
+
+
+//PMS/guests
+const GuestPage = Loadable(lazy(() => import('pages/pms/guests/create')));
+const GuestDetails = Loadable(lazy(() => import('pages/pms/guests/details')));
+const GuestFeedback = Loadable(lazy(() => import('pages/pms/guests/feedback')));
+
+//PMS/billing
+const BillingPage = Loadable(lazy(() => import('pages/pms/billing/create')));
+const PendingPaymentPage = Loadable(lazy(() => import('pages/pms/billing/pending')));
+const InvoicePage = Loadable(lazy(() => import('pages/pms/billing/invoice')));
+
 // ERROR
 const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404')));
 
@@ -77,9 +96,42 @@ const MainRoutes = {
          {
           path: 'rooms/cleaning',
           element: <RoomsCleaningPage />
-        }
+        },
 
+        /*================================== Guest MANAGEMENT ==============================*/
 
+ {
+          path: 'guests/create',
+          element: <GuestPage />
+        },
+
+        {
+         
+        path: '/pms/guests/details/:id',
+        element: <GuestDetails />
+},
+ {
+         
+        path: '/pms/guests/feedback',
+        element: <GuestFeedback />
+},
+ /*==================================  Billing MANAGEMENT ==============================*/
+
+        {
+         
+        path: '/pms/billing/create',
+        element: <BillingPage />
+},
+ {
+         
+        path: '/pms/billing/pending',
+        element: <PendingPaymentPage />
+},
+{
+         
+        path: '/pms/billing/invoice',
+        element: <InvoicePage />
+},
 
       ]
 
