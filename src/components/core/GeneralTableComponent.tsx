@@ -2,10 +2,6 @@ import { useMemo, useState } from 'react';
 import {
   Box,
   Divider,
-  Menu,
-  MenuItem,
-  Checkbox,
-  FormControlLabel,
   Paper,
   Stack,
   Table,
@@ -14,7 +10,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button
+  Menu,
+  MenuItem,
+  Checkbox,
+  FormControlLabel
 } from '@mui/material';
 
 import {
@@ -24,9 +23,6 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  Row,
-  RowData,
-  Table as TanstackTable,
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table';
@@ -34,148 +30,50 @@ import {
 // project imports
 import { CSVExport, DebouncedInput, TablePagination } from 'components/third-party/react-table';
 import IconButton from 'components/@extended/IconButton';
-import { Edit2, Trash, Layer } from 'iconsax-reactjs';
-
-/* ================= EDITABLE CELL ================= */
-
-function EditableCell<T extends RowData>({
-  getValue,
-  row,
-  column,
-  table
-}: {
-  getValue: () => unknown;
-  row: Row<T>;
-  column: { id: string };
-  table: TanstackTable<T>;
-}) {
-  const [value, setValue] = useState(String(getValue() ?? ''));
-
-  const onBlur = () => {
-    table.options.meta?.updateData(row.index, column.id, value);
-  };
-
-  return (
-    <input
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-      onBlur={onBlur}
-      style={{
-        width: '100%',
-        padding: 6,
-        border: '1px solid #ccc',
-        borderRadius: 4
-      }}
-    />
-  );
-}
+import { Layer } from 'iconsax-reactjs';
 
 /* ================= PROPS ================= */
 
-interface GeneralTableProps<T extends RowData> {
+interface GenericTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
   filename?: string;
+  meta?: {
+    extraContent?: React.ReactNode; // ✅ legend / summary slot
+  };
 }
 
 /* ================= COMPONENT ================= */
 
-export default function GeneralTableComponent<
-  T extends object
->
-({
-  data: initialData,
+export default function GenericTable<T>({
+  data,
   columns,
-  filename = 'table-data.csv'
-}: GeneralTableProps<T>) {
-  const [data, setData] = useState<T[]>(initialData);
+  filename = 'table.csv',
+  meta
+}: GenericTableProps<T>) {
   const [globalFilter, setGlobalFilter] = useState('');
-  const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [editedRows, setEditedRows] = useState<Record<string, boolean>>({});
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const table = useReactTable({
     data,
-    columns: [
-      ...columns,
-      {
-        id: 'actions',
-        header: 'Actions',
-        cell: ({ row, table }) => {
-          const isEditing = editedRows[row.id];
-
-          return (
-            <Stack direction="row" spacing={1}>
-              {isEditing ? (
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={() =>
-                    setEditedRows((p) => ({ ...p, [row.id]: false }))
-                  }
-                >
-                  Save
-                </Button>
-              ) : (
-                <IconButton
-                  onClick={() =>
-                    setEditedRows((p) => ({ ...p, [row.id]: true }))
-                  }
-                >
-                  <Edit2 />
-                </IconButton>
-              )}
-
-              <IconButton
-                color="error"
-                onClick={() => table.options.meta?.removeRow(row.index)}
-              >
-                <Trash />
-              </IconButton>
-            </Stack>
-          );
-        }
-      }
-    ],
-    defaultColumn: {
-      cell: ({ getValue, row, column, table }) => {
-        if (!editedRows[row.id]) return getValue();
-        return <EditableCell {...{ getValue, row, column, table }} />;
-      }
-    },
+    columns,
     state: {
       globalFilter,
-      rowSelection,
       columnVisibility
     },
     onGlobalFilterChange: setGlobalFilter,
-    onRowSelectionChange: setRowSelection,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    meta: {
-      updateData: (rowIndex, columnId, value) => {
-        setData((old) =>
-          old.map((row, i) =>
-            i === rowIndex ? ({ ...row, [columnId]: value } as T) : row
-          )
-        );
-      },
-      removeRow: (rowIndex) => {
-        setData((old) => old.filter((_, i) => i !== rowIndex));
-      }
-    }
+    getPaginationRowModel: getPaginationRowModel()
   });
 
   const headers = useMemo(
     () =>
       columns
-        .filter(
-          (c): c is ColumnDef<T> & { accessorKey: string } =>
-            'accessorKey' in c && typeof c.accessorKey === 'string'
-        )
+        .filter((c): c is ColumnDef<T> & { accessorKey: string } => 'accessorKey' in c)
         .map((c) => ({
           label: String(c.header),
           key: c.accessorKey
@@ -183,12 +81,12 @@ export default function GeneralTableComponent<
     [columns]
   );
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  /* ================= RENDER ================= */
 
   return (
     <>
-      {/* SEARCH + EXPORT */}
-      <Stack direction="row" justifyContent="space-between" sx={{ p: 2,mt:2 }}>
+      {/* ================= SEARCH + EXPORT + LAYER ================= */}
+      <Stack direction="row" justifyContent="space-between" sx={{ p: 2 }}>
         <DebouncedInput
           value={globalFilter}
           onFilterChange={(v) => setGlobalFilter(String(v))}
@@ -198,13 +96,36 @@ export default function GeneralTableComponent<
 
         <Stack direction="row" spacing={1}>
           <CSVExport data={data} headers={headers} filename={filename} />
+
+          {/* COLUMN VISIBILITY */}
           <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
             <Layer />
           </IconButton>
         </Stack>
       </Stack>
 
-      {/* TABLE */}
+      {/* ================= COLUMN VISIBILITY MENU ================= */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+      >
+        {table.getAllLeafColumns().map((column) => (
+          <MenuItem key={column.id}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={column.getIsVisible()}
+                  onChange={column.getToggleVisibilityHandler()}
+                />
+              }
+              label={String(column.columnDef.header)}
+            />
+          </MenuItem>
+        ))}
+      </Menu>
+
+      {/* ================= TABLE ================= */}
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead sx={{ bgcolor: 'primary.main' }}>
@@ -233,7 +154,16 @@ export default function GeneralTableComponent<
         </Table>
       </TableContainer>
 
+      {/* ================= EXTRA CONTENT (LEGEND) ================= */}
+      {meta?.extraContent && (
+        <Box sx={{ px: 2, py: 2 }}>
+          {meta.extraContent}
+        </Box>
+      )}
+
       <Divider />
+
+      {/* ================= PAGINATION ================= */}
       <Box sx={{ p: 2 }}>
         <TablePagination
           setPageSize={table.setPageSize}

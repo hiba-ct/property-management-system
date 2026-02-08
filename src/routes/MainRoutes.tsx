@@ -15,6 +15,7 @@ import DashboardLayout from 'layout/Dashboard';
 
 
 
+
 // DASHBOARD
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
@@ -41,6 +42,20 @@ const BillingPage = Loadable(lazy(() => import('pages/pms/billing/create')));
 const PendingPaymentPage = Loadable(lazy(() => import('pages/pms/billing/pending')));
 const InvoicePage = Loadable(lazy(() => import('pages/pms/billing/invoice')));
 
+//PMS/housekeeping
+const HousekeepingPage = Loadable(lazy(() => import('pages/pms/housekeeping/create')));
+
+//PMS/amenities
+const AmenitiesPage = Loadable(lazy(() => import('pages/pms/amenities/create')));
+
+//PMS/overview
+const OverviewPage = Loadable(lazy(() => import('pages/pms/overview/create')));
+
+//PMS/amenities
+
+//PMS/maiteanance requests
+const MaintenanceRequestsPage = Loadable(lazy(() => import('pages/pms/maintenance/requests')));
+const MaintenanceIssuesPage = Loadable(lazy(() => import('pages/pms/maintenance/issues')));
 // ERROR
 const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404')));
 
@@ -132,7 +147,30 @@ const MainRoutes = {
         path: '/pms/billing/invoice',
         element: <InvoicePage />
 },
-
+/*==================================HOUSEKEEPING ==============================*/
+        {
+          path: '/pms/housekeeping/create',
+          element: <HousekeepingPage />
+        },
+ /*==================================AMENITIES ==============================*/
+        {
+          path: '/pms/amenities/create',
+          element: <AmenitiesPage />
+        },
+        /*==================================OVERVIEW ==============================*/
+         {
+          path: '/pms/overview/create',
+          element: <OverviewPage />
+        },
+         /*==================================MAINTENANCE REQUESTS ==============================*/
+         {
+          path: '/pms/maintenance/requests',
+          element: <MaintenanceRequestsPage />
+        },
+         {
+          path: '/pms/maintenance/issues',
+          element: <MaintenanceIssuesPage />
+        },
       ]
 
 

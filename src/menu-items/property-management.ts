@@ -24,29 +24,27 @@ import { NavItemType } from 'types/menu';
 
 const icons = {
   dashboard: Element3,
-  users: User,
-  roles: Profile2User,
-  permissions: UserTick,
 
   booking: Calendar,
   calendar: Calendar,
   create: AddSquare,
-  document: DocumentText,
+  details: DocumentText,
 
   rooms: Home2,
   property: Buildings,
+
   guests: People,
+  profile: Profile2User,
 
   invoice: ReceiptItem,
   payment: Wallet2,
+  pending: PendingActionsIcon,
+
   housekeeping: Broom,
+  maintenance: DocumentText,
 
   reports: Chart,
-  settings: Setting2,
-
-  guestDetails: Profile2User,
-
-  pending: PendingActionsIcon // ✅ MUI icon
+  settings: Setting2
 };
 
 /* ================= PROPERTY MANAGEMENT ================= */
@@ -68,7 +66,7 @@ const propertyManagement: NavItemType = {
           title: 'Create Booking',
           type: 'item',
           icon: icons.create,
-          iconColor: '#2E7D32',
+          iconColor: '#2E7D32', // green
           url: '/pms/bookings/create'
         },
         {
@@ -76,15 +74,15 @@ const propertyManagement: NavItemType = {
           title: 'Booking Calendar',
           type: 'item',
           icon: icons.calendar,
-          iconColor: '#1565C0',
+          iconColor: '#1565C0', // blue
           url: '/pms/bookings/calendar'
         },
         {
           id: 'booking-details',
           title: 'Booking Details',
           type: 'item',
-          icon: icons.document,
-          iconColor: '#8D3C4A',
+          icon: icons.details,
+          iconColor: '#8D3C4A', // maroon
           url: '/pms/bookings/details'
         }
       ]
@@ -93,12 +91,12 @@ const propertyManagement: NavItemType = {
     /* ================= ROOM & INVENTORY ================= */
     {
       id: 'room-inventory',
-      title: 'Room & Inventory ',
+      title: 'Room & Inventory',
       type: 'collapse',
       icon: icons.rooms,
       children: [
-         {
-          id: 'rooms-list',
+        {
+          id: 'rooms-create',
           title: 'Create Rooms',
           type: 'item',
           icon: icons.create,
@@ -113,13 +111,12 @@ const propertyManagement: NavItemType = {
           iconColor: '#8D3C4A',
           url: '/pms/rooms/types'
         },
-       
         {
           id: 'rooms-cleaning',
           title: 'Cleaning Status',
           type: 'item',
           icon: icons.housekeeping,
-          iconColor: '#F57C00',
+          iconColor: '#F57C00', // orange
           url: '/pms/rooms/cleaning'
         }
       ]
@@ -144,17 +141,17 @@ const propertyManagement: NavItemType = {
           id: 'guest-feedback',
           title: 'Guest Feedback',
           type: 'item',
-          icon: icons.document,
-          iconColor: '#1565C0',
+          icon: icons.details,
+          iconColor: '#1565C0', // blue
           url: '/pms/guests/feedback'
         }
       ]
     },
 
-    /* ================= BILLING & PAYMENT ================= */
+    /* ================= BILLING & PAYMENTS ================= */
     {
-      id: 'payment',
-      title: 'Billing & Payment ',
+      id: 'billing',
+      title: 'Billing & Payments',
       type: 'collapse',
       icon: icons.payment,
       children: [
@@ -170,17 +167,97 @@ const propertyManagement: NavItemType = {
           id: 'pending-payments',
           title: 'Pending Payments',
           type: 'item',
-          icon: icons.pending, // ✅ MUI icon
-          iconColor: '#F57C00', // 🟠 Pending
+          icon: icons.pending,
+          iconColor: '#F57C00', // orange
           url: '/pms/billing/pending'
         },
-         {
+        {
           id: 'invoice',
           title: 'Invoice',
           type: 'item',
-          icon: icons.invoice, // ✅ MUI icon
-          iconColor: '#1565C0', 
+          icon: icons.invoice,
+          iconColor: '#1565C0', // blue
           url: '/pms/billing/invoice'
+        }
+      ]
+    },
+
+    /* ================= HOUSEKEEPING ================= */
+    {
+      id: 'housekeeping',
+      title: 'Housekeeping',
+      type: 'collapse',
+      icon: icons.housekeeping,
+      children: [
+        {
+          id: 'housekeeping-create',
+          title: 'Create Task',
+          type: 'item',
+          icon: icons.create,
+          iconColor: '#2E7D32',
+          url: '/pms/housekeeping/create'
+        }
+      ]
+    },
+
+    /* ================= AMENITIES ================= */
+    {
+      id: 'amenities',
+      title: 'Amenities Management',
+      type: 'collapse',
+      icon: icons.property,
+      children: [
+        {
+          id: 'amenities-create',
+          title: 'Create Amenity',
+          type: 'item',
+          icon: icons.create,
+          iconColor: '#2E7D32',
+          url: '/pms/amenities/create'
+        }
+      ]
+    },
+
+    /* ================= AVAILABILITY ================= */
+    {
+      id: 'availability',
+      title: 'Availability Overview',
+      type: 'collapse',
+      icon: icons.calendar,
+      children: [
+        {
+          id: 'availability-overview',
+          title: 'Overview',
+          type: 'item',
+          icon: icons.details,
+          iconColor: '#1565C0',
+          url: '/pms/overview/create'
+        }
+      ]
+    },
+
+    /* ================= MAINTENANCE ================= */
+    {
+      id: 'maintenance',
+      title: 'Maintenance overview',
+      type: 'collapse',
+      icon: icons.maintenance,
+      children: [
+        {
+          id: 'maintenance-requests',
+          title: 'Requests',
+          type: 'item',
+          icon: icons.details,
+          iconColor: '#F57C00',
+          url: '/pms/maintenance/requests'
+        },
+        {
+          id: 'maintenance-issues',
+          title: 'Issues',
+          type: 'item',
+          icon: icons.details,
+          iconColor: '#D32F2F', // red (issues)
+          url: '/pms/maintenance/issues'
         }
       ]
     }
