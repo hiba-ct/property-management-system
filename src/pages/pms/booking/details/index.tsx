@@ -1,13 +1,14 @@
 import Page from 'components/Page';
-import BookingDetailsForm from './Form';
-import BookingDetailsList from './List';
+import BookingTable from './List';
+
 
 export default function BookingDetailsPage() {
   return (
     <Page
-      Form={BookingDetailsForm}
-      List={BookingDetailsList}
+      
+      List={BookingTable}
       name="Booking Details"
+      viewOnly
       mode="toggle"
     />
   );

@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GenericTable } from 'components/core';
+import { useState } from 'react';
 
 interface RoomType {
   code: string;
@@ -31,11 +32,28 @@ const columns: ColumnDef<RoomType>[] = [
 ];
 
 export default function RoomTypeList() {
+  const [rows, setRows] = useState<RoomType[]>(data);
+  
+    /* ================= EDIT ================= */
+  
+    const handleEdit = (row: RoomType) => {
+      console.log("Edit Room Type:", row);
+      // Example: open edit form or navigate
+    };
+  
+    /* ================= DELETE ================= */
+  
+    const handleDelete = (row: RoomType) => {
+      setRows(prev => prev.filter(r => r !== row));
+    };
+  
   return (
     <GenericTable<RoomType>
-      data={data}
+      data={rows}
       columns={columns}
       filename="room-types.csv"
+      onEdit={handleEdit}
+      onDelete={handleDelete}
     />
   );
 }

@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GenericTable } from 'components/core';
+import { useState } from 'react';
 
 interface Cleaning {
   room: string;
@@ -21,5 +22,24 @@ const columns: ColumnDef<Cleaning>[] = [
 ];
 
 export default function CleaningList() {
-  return <GenericTable data={data} columns={columns} />;
+  const [rows, setRows] = useState<Cleaning[]>(data);
+  
+    /* ================= EDIT ================= */
+  
+    const handleEdit = (row: Cleaning) => {
+      console.log("Edit Cleaning:", row);
+      // Example: open edit form or navigate
+    };
+  
+    /* ================= DELETE ================= */
+  
+    const handleDelete = (row: Cleaning) => {
+      setRows(prev => prev.filter(r => r !== row));
+    };
+  
+  return <GenericTable data={rows} 
+  columns={columns}
+  onEdit={handleEdit} 
+  onDelete={handleDelete} />;
 }
+

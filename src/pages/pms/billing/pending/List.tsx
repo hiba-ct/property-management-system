@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GenericTable } from 'components/core';
+import { useState } from 'react';
 
 interface PendingPayment {
   bookingId: string;
@@ -47,11 +48,22 @@ const columns: ColumnDef<PendingPayment>[] = [
 ];
 
 export default function PendingPaymentList() {
+  const [rows,setRows] = useState<PendingPayment[]>(data)
+  
+  const handleEdit = (row:PendingPayment)=>{
+   console.log("edit",row)
+  }
+  
+  const handleDelete = (row:PendingPayment)=>{
+   setRows(prev=>prev.filter(r=>r.bookingId!==row.bookingId))
+  }
   return (
     <GenericTable<PendingPayment>
       data={data}
       columns={columns}
       filename="pending-payments.csv"
+      onEdit={handleEdit}
+      onDelete={handleDelete}
     />
   );
 }

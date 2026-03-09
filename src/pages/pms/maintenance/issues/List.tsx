@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GenericTable } from 'components/core';
 import Chip from '@mui/material/Chip';
+import { useState } from 'react';
 
 interface MaintenanceIssue {
   id: string;
@@ -66,11 +67,28 @@ const columns: ColumnDef<MaintenanceIssue>[] = [
 ];
 
 export default function MaintenanceIssueList() {
+   const [rows, setRows] = useState<MaintenanceIssue[]>(data);
+    
+      /* ================= EDIT ================= */
+    
+      const handleEdit = (row: MaintenanceIssue) => {
+        console.log("Edit Task:", row);
+        // Example: open edit form or navigate
+      };
+    
+      /* ================= DELETE ================= */
+    
+      const handleDelete = (row: MaintenanceIssue) => {
+        setRows(prev => prev.filter(r => r !== row));
+      };
+    
   return (
     <GenericTable<MaintenanceIssue>
-      data={data}
+      data={rows}
       columns={columns}
       filename="maintenance-issues.csv"
+      onEdit={handleEdit}
+      onDelete={handleDelete}
     />
   );
 }

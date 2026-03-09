@@ -3,6 +3,8 @@ import { GenericTable } from 'components/core';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
+
 
 /* ================= TYPES ================= */
 
@@ -68,11 +70,28 @@ const columns: ColumnDef<AvailabilityRow>[] = [
 /* ================= COMPONENT ================= */
 
 export default function AvailabilityList() {
+  const [rows, setRows] = useState<AvailabilityRow[]>(data);
+  
+    /* ================= EDIT ================= */
+  
+    const handleEdit = (row: AvailabilityRow) => {
+      console.log("Edit Task:", row);
+      // Example: open edit form or navigate
+    };
+  
+    /* ================= DELETE ================= */
+  
+    const handleDelete = (row: AvailabilityRow) => {
+      setRows(prev => prev.filter(r => r !== row));
+    };
+  
   return (
     <GenericTable<AvailabilityRow>
       data={data}
       columns={columns}
       filename="availability-overview.csv"
+      onEdit={handleEdit}
+      onDelete={handleDelete}
       meta={{
         extraContent: (
           <>

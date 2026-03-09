@@ -11,12 +11,13 @@ import MainCard from './MainCard';
 import { Add, Book } from 'iconsax-reactjs';
 
 interface IPage {
-  Form: React.ElementType;
-  List: React.ElementType;
+  Form?: React.ElementType;
+  List?: React.ElementType;
   name: string;
   mode?: 'toggle' | 'split';
   formWidth?: number;
   listWidth?: number;
+  viewOnly?: boolean; // ⭐ for calendar / view pages
 }
 
 const Page = ({
@@ -25,12 +26,15 @@ const Page = ({
   name,
   mode = 'toggle',
   formWidth = 4,
-  listWidth = 8
+  listWidth = 8,
+  viewOnly = false
 }: IPage) => {
   const [showTable, setShowTable] = useState(false);
   const theme = useTheme();
 
-  // ✅ Reusable header style
+  const ListComponent = List;
+  const FormComponent = Form;
+
   const headerSX = {
     position: 'sticky',
     top: HEADER_HEIGHT,
@@ -54,46 +58,66 @@ const Page = ({
       <Grid container spacing={GRID_COMMON_SPACING}>
         <Grid size={12}>
           <MainCard content={false} sx={{ overflow: 'visible' }}>
+            
+            {/* HEADER */}
             <CardActions sx={headerSX}>
               <Stack direction="row" sx={{ ...headerContentSX, width: 1 }}>
+                
                 <Typography variant="h5" fontWeight={600}>
-                  {showTable ? `${name} List` : `Add ${name}`}
+                  {viewOnly
+                    ? name
+                    : showTable
+                    ? `${name} List`
+                    : `Add ${name}`}
                 </Typography>
 
-                <Stack direction="row" spacing={1}>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<Add />}
-                    size="small"
-                    onClick={() => setShowTable(false)}
-                  >
-                    Create
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<Book />}
-                    size="small"
-                    onClick={() => setShowTable(true)}
-                  >
-                    List
-                  </Button>
-                </Stack>
+                {!viewOnly && (
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<Add />}
+                      size="small"
+                      onClick={() => setShowTable(false)}
+                    >
+                      Create
+                    </Button>
+
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<Book />}
+                      size="small"
+                      onClick={() => setShowTable(true)}
+                    >
+                      List
+                    </Button>
+                  </Stack>
+                )}
               </Stack>
             </CardActions>
 
-            {showTable ? <List /> : <Form />}
+            {/* CONTENT */}
+            {viewOnly ? (
+              ListComponent && <ListComponent />
+            ) : showTable ? (
+              ListComponent && <ListComponent />
+            ) : (
+              FormComponent && <FormComponent />
+            )}
+
           </MainCard>
         </Grid>
       </Grid>
     );
   }
 
-  // --- Split Mode ---
+  // ----- SPLIT MODE -----
+
   return (
     <Grid container spacing={GRID_COMMON_SPACING}>
-      {/* Form */}
+
+      {/* FORM */}
       <Grid size={{ xs: 12, lg: formWidth }}>
         <MainCard content={false} sx={{ overflow: 'visible' }}>
           <Stack direction="row" sx={{ ...headerSX, ...headerContentSX }}>
@@ -101,14 +125,16 @@ const Page = ({
               Add {name}
             </Typography>
           </Stack>
+
           <Divider />
+
           <div style={{ padding: 16 }}>
-            <Form />
+            {FormComponent && <FormComponent />}
           </div>
         </MainCard>
       </Grid>
 
-      {/* List */}
+      {/* LIST */}
       <Grid size={{ xs: 12, lg: listWidth }}>
         <MainCard content={false} sx={{ overflow: 'visible' }}>
           <Stack direction="row" sx={{ ...headerSX, ...headerContentSX }}>
@@ -116,12 +142,15 @@ const Page = ({
               {name} List
             </Typography>
           </Stack>
+
           <Divider />
+
           <div style={{ padding: 16 }}>
-            <List />
+            {ListComponent && <ListComponent />}
           </div>
         </MainCard>
       </Grid>
+
     </Grid>
   );
 };

@@ -2,35 +2,43 @@ import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 
-import { SaveAdd, Eraser } from 'iconsax-reactjs';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 
 import { CommonTextInput, CommonSelectInput } from 'components/core';
+import { SaveAdd, Eraser } from 'iconsax-reactjs';
 import { validationSchemaUserType } from './schema';
 
-/* ==================== Validation Schema ==================== */
-
-
-/* ==================== Booking Form ==================== */
-export default function BookingForm() {
+export default function BookingCreateForm() {
   const formik = useFormik({
     initialValues: {
       guestName: '',
+      email: '',
       mobile: '',
+      address: '',
+
       checkIn: '',
       checkOut: '',
+      status: '',
+      source: '',
+
       roomType: '',
       roomNo: '',
-      paymentMode: ''
+      guests: '',
+
+      rate: '',
+      nights: '',
+
+      totalAmount: '',
+      paid: '',
+      paymentMode: '',
+      paymentStatus: ''
     },
     validationSchema: validationSchemaUserType,
     onSubmit: (values) => {
-      console.log('Booking Data:', values);
-      // 🔗 API call will go here later
+      console.log('Booking Details:', values);
     }
   });
 
@@ -39,99 +47,55 @@ export default function BookingForm() {
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
           <Grid container spacing={2}>
-            {/* Guest Name */}
-            <Grid size={{ xs: 12,md:6 }}>
-              <CommonTextInput
-                formik={formik}
-                name="guestName"
-                label="Guest Name"
-              />
-            </Grid>
+            {/* Guest Info */}
+            <Grid size={12}><b>Guest Information</b></Grid>
+            <Grid size={{xs:12,md:6}}><CommonTextInput formik={formik} name="guestName" label="Guest Name" /></Grid>
+            <Grid size={{xs:12,md:6}}><CommonTextInput formik={formik} name="email" label="Email" /></Grid>
+            <Grid size={{xs:12,md:6}}><CommonTextInput formik={formik} name="mobile" label="Mobile" /></Grid>
+            <Grid size={{xs:12,md:6}}><CommonTextInput formik={formik} name="address" label="Address" /></Grid>
 
-            {/* Mobile */}
-            <Grid size={{ xs: 12,md:6 }}>
-              <CommonTextInput
-                formik={formik}
-                name="mobile"
-                label="Mobile Number"
-              />
-            </Grid>
-
-            {/* Check In */}
-            <Grid size={{ xs: 12,md:6 }}>
-              <CommonTextInput
-                formik={formik}
-                name="checkIn"
-                label="Check In"
-                type="date"
-              />
-            </Grid>
-
-            {/* Check Out */}
-            <Grid size={{ xs: 12,md:6 }}>
-              <CommonTextInput
-                formik={formik}
-                name="checkOut"
-                label="Check Out"
-                type="date"
-              />
-            </Grid>
-
-            {/* Room Type */}
-            <Grid size={{ xs: 12,md:6 }}>
+            {/* Booking Info */}
+            <Grid size={12}><b>Booking Information</b></Grid>
+            <Grid size={{xs:12,md:6}}><CommonTextInput type="date" formik={formik} name="checkIn" label="Check In" /></Grid>
+            <Grid size={{xs:12,md:6}}><CommonTextInput type="date" formik={formik} name="checkOut" label="Check Out" /></Grid>
+            <Grid size={{xs:12,md:6}}>
               <CommonSelectInput
                 formik={formik}
-                name="roomType"
-                label="Room Type"
+                name="status"
+                label="Status"
                 options={[
-                  { label: 'Deluxe', value: 'deluxe' },
-                  { label: 'Suite', value: 'suite' },
-                  { label: 'Standard', value: 'standard' }
+                  { label: 'Confirmed', value: 'Confirmed' },
+                  { label: 'Cancelled', value: 'Cancelled' },
+                  { label: 'Checked-In', value: 'Checked-In' }
                 ]}
               />
             </Grid>
+            <Grid size={{xs:12,md:6}}><CommonTextInput formik={formik} name="source" label="Source" /></Grid>
 
-            {/* Room No */}
-            <Grid size={{ xs: 12,md:6 }}>
-              <CommonTextInput
-                formik={formik}
-                name="roomNo"
-                label="Room Number"
-              />
-            </Grid>
+            {/* Room Info */}
+            <Grid size={12}><b>Room Details</b></Grid>
+            <Grid size={{xs:12,md:4}}><CommonTextInput formik={formik} name="roomType" label="Room Type" /></Grid>
+            <Grid size={{xs:12,md:4}}><CommonTextInput formik={formik} name="roomNo" label="Room Number" /></Grid>
+            <Grid size={{xs:12,md:4}}><CommonTextInput formik={formik} name="guests" label="Guests" /></Grid>
 
-            {/* Payment Mode */}
-            <Grid size={{ xs: 12,md:6 }}>
-              <CommonSelectInput
-                formik={formik}
-                name="paymentMode"
-                label="Payment Mode"
-                options={[
-                  { label: 'Cash', value: 'cash' },
-                  { label: 'Card', value: 'card' },
-                  { label: 'UPI', value: 'upi' }
-                ]}
-              />
-            </Grid>
+            {/* Pricing */}
+            <Grid size={{xs:12,md:4}}><CommonTextInput type="number" formik={formik} name="rate" label="Rate / Night" /></Grid>
+            <Grid size={{xs:12,md:4}}><CommonTextInput type="number" formik={formik} name="nights" label="Nights" /></Grid>
+            <Grid size={{xs:12,md:4}}><CommonTextInput type="number" formik={formik} name="totalAmount" label="Total Amount" /></Grid>
+            <Grid size={{xs:12,md:4}}><CommonTextInput type="number" formik={formik} name="paid" label="Paid Amount" /></Grid>
+
+            {/* Payment */}
+            <Grid size={{xs:12,md:4}}><CommonTextInput formik={formik} name="paymentMode" label="Payment Mode" /></Grid>
+            <Grid size={{xs:12,md:4}}><CommonTextInput formik={formik} name="paymentStatus" label="Payment Status" /></Grid>
           </Grid>
         </CardContent>
 
-        {/* ACTION BUTTONS */}
         <CardActions sx={{ justifyContent: 'center' }}>
           <Stack direction="row" spacing={2}>
-            <Button
-              color="error"
-              startIcon={<Eraser />}
-              onClick={() => formik.resetForm()}
-            >
+            <Button color="error" startIcon={<Eraser />} onClick={() => formik.resetForm()}>
               Clear
             </Button>
-
-            <Button
-              type="submit"
-              variant="contained"
-              startIcon={<SaveAdd />}
-            >
+            <Button type="submit" variant="contained" startIcon={<SaveAdd />}>
               Save
             </Button>
           </Stack>

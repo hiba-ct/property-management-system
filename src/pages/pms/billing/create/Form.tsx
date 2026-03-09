@@ -33,49 +33,41 @@ export default function AddPaymentForm() {
     
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
-          {/* ================= HEADER ================= */}
-          <Typography variant="h5" fontWeight={600}>
-            Add Payment
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Record payment received for a booking
-          </Typography>
-
-          <Divider sx={{ my: 2 }} />
+          
 
           {/* ================= BOOKING SUMMARY ================= */}
           <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              bgcolor: 'secondary.50',
-              border: '1px solid',
-              borderColor: 'divider',
-              mb: 3
-            }}
-          >
-            <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-              Booking Information
-            </Typography>
+  sx={{
+    p: 2.5,
+    borderRadius: 2,
+    bgcolor: 'primary.lighter',
+    border: '1px solid',
+    borderColor: 'primary.light',
+    mb: 3
+  }}
+>
+  
 
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Typography variant="body2">
-                  <b>Booking ID:</b> BK2025-145
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Typography variant="body2">
-                  <b>Guest:</b> John Doe
-                </Typography>
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Typography variant="body2">
-                  <b>Room No:</b> 204
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
+  <Grid container spacing={2}>
+    <Grid size={{ xs: 12, md: 4 }}>
+      <Typography variant="body2">
+        <b>Booking ID:</b> BK2025-145
+      </Typography>
+    </Grid>
+
+    <Grid size={{ xs: 12, md: 4 }}>
+      <Typography variant="body2">
+        <b>Guest:</b> John Doe
+      </Typography>
+    </Grid>
+
+    <Grid size={{ xs: 12, md: 4 }}>
+      <Typography variant="body2">
+        <b>Room No:</b> 204
+      </Typography>
+    </Grid>
+  </Grid>
+</Box>
 
           {/* ================= PAYMENT FORM ================= */}
           <Grid container spacing={2}>

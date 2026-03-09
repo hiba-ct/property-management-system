@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GenericTable } from 'components/core';
+import { useState } from 'react';
 
 interface Invoice {
   invoiceNo: string;
@@ -52,11 +53,23 @@ const columns: ColumnDef<Invoice>[] = [
 ];
 
 export default function InvoiceList() {
+  const [rows,setRows] = useState<Invoice[]>(data)
+
+const handleEdit = (row:Invoice)=>{
+ console.log("edit",row)
+}
+
+const handleDelete = (row:Invoice)=>{
+ setRows(prev=>prev.filter(r=>r.invoiceNo!==row.invoiceNo))
+}
+
   return (
     <GenericTable<Invoice>
       data={data}
       columns={columns}
       filename="invoice-list.csv"
+      onEdit={handleEdit}
+      onDelete={handleDelete}
     />
   );
 }

@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GenericTable } from 'components/core';
 import Chip from '@mui/material/Chip';
+import { useState } from 'react';
 
 interface Amenity {
   name: string;
@@ -48,11 +49,23 @@ const columns: ColumnDef<Amenity>[] = [
 ];
 
 export default function AmenityList() {
+  const [rows,setRows] = useState(data)
+
+const handleEdit = (row:Amenity)=>{
+ console.log("edit",row)
+}
+
+const handleDelete = (row:Amenity)=>{
+ setRows(prev=>prev.filter(r=>r.name!==row.name))
+}
+
   return (
     <GenericTable<Amenity>
       data={data}
       columns={columns}
       filename="amenities.csv"
+      onEdit={handleEdit}
+      onDelete={handleDelete}
     />
   );
 }

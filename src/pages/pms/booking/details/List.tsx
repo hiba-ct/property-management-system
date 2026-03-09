@@ -1,172 +1,219 @@
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
+import { useState } from 'react';
+import { ColumnDef } from '@tanstack/react-table';
+import { GenericTable } from 'components/core';
 
-import { Edit, Trash, Printer, Sms } from 'iconsax-reactjs';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+  Stack,
+  Chip,
+  Button
+} from '@mui/material';
 
-export default function BookingDetails() {
-  // 🔹 Dummy data (replace with API later)
-  const booking = {
-    id: 'BKG-2025-001',
-    guestName: 'John Doe',
-    email: 'john@example.com',
-    mobile: '+91 9876543210',
-    address: '123 MG Road, Bangalore',
+/* ================= TYPES ================= */
 
-    checkIn: '22 Aug 2025',
-    checkOut: '25 Aug 2025',
-    status: 'Confirmed',
-    source: 'Website',
-    createdOn: '20 Aug 2025, 2:30 PM',
+interface Booking {
+  id: string;
+  guest: string;
+  room: string;
+  checkIn: string;
+  checkOut: string;
+  status: 'Confirmed' | 'Pending' | 'Cancelled';
+}
 
-    roomType: 'Deluxe Room',
-    roomNo: '101',
-    guests: '2 Adults, 1 Child',
-    rate: 4000,
-    nights: 3,
+/* ================= DATA ================= */
 
-    services: [
-      { name: 'Breakfast', price: 1500 },
-      { name: 'Extra Bed', price: 800 }
-    ],
+const initialData: Booking[] = [
+  {
+    id: 'BK001',
+    guest: 'John Doe',
+    room: 'Deluxe',
+    checkIn: '2025-01-01',
+    checkOut: '2025-01-03',
+    status: 'Confirmed'
+  },
+  {
+    id: 'BK002',
+    guest: 'Alice Smith',
+    room: 'Suite',
+    checkIn: '2025-02-05',
+    checkOut: '2025-02-08',
+    status: 'Pending'
+  },
+  {
+    id: 'BK003',
+    guest: 'Alice Smith',
+    room: 'Suite',
+    checkIn: '2025-02-05',
+    checkOut: '2025-02-08',
+    status: 'Cancelled'
+  }
+];
 
-    totalAmount: 14300,
-    paid: 10000,
-    paymentMode: 'UPI',
-    paymentStatus: 'Partially Paid',
+/* ================= STATUS COLOR ================= */
 
-    notes: [
-      'Guest requested early check-in at 10 AM',
-      'Needs vegetarian breakfast'
-    ]
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'Confirmed':
+      return 'success';
+    case 'Pending':
+      return 'warning';
+    case 'Cancelled':
+      return 'error';
+    default:
+      return 'default';
+  }
+};
+
+/* ================= COMPONENT ================= */
+
+export default function BookingList() {
+
+  const [rows, setRows] = useState<Booking[]>(initialData);
+  const [selected, setSelected] = useState<Booking | null>(null);
+  const [open, setOpen] = useState(false);
+
+  /* ================= VIEW ================= */
+
+  const handleView = (row: Booking) => {
+    setSelected(row);
+    setOpen(true);
   };
 
-  const servicesTotal = booking.services.reduce((a, b) => a + b.price, 0);
-  const roomTotal = booking.rate * booking.nights;
+  const handleClose = () => setOpen(false);
+
+  /* ================= EDIT ================= */
+
+  const handleEdit = (row: Booking) => {
+    console.log('Edit booking', row);
+  };
+
+  /* ================= DELETE ================= */
+
+  const handleDelete = (row: Booking) => {
+    setRows(prev => prev.filter(r => r.id !== row.id));
+  };
+
+  /* ================= TABLE COLUMNS ================= */
+
+  const columns: ColumnDef<Booking>[] = [
+    {
+      header: 'Booking ID',
+      accessorKey: 'id'
+    },
+    {
+      header: 'Guest',
+      accessorKey: 'guest'
+    },
+    {
+      header: 'Room',
+      accessorKey: 'room'
+    },
+    {
+      header: 'Check In',
+      accessorKey: 'checkIn'
+    },
+    {
+      header: 'Check Out',
+      accessorKey: 'checkOut'
+    },
+    {
+      header: 'Status',
+      cell: ({ row }) => (
+        <Chip
+          label={row.original.status}
+          color={getStatusColor(row.original.status) as any}
+          size="small"
+        />
+      )
+    }
+  ];
 
   return (
-    <Card>
-      <CardContent>
-        <Grid container spacing={3}>
-          {/* ================= GUEST INFO ================= */}
-          <Grid size={12}>
-            <Typography variant="h6">Guest Information</Typography>
-            <Divider sx={{ my: 1 }} />
-          </Grid>
+    <>
+      {/* ================= TABLE ================= */}
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography><b>Name:</b> {booking.guestName}</Typography>
-            <Typography><b>Email:</b> {booking.email}</Typography>
-            <Typography><b>Mobile:</b> {booking.mobile}</Typography>
-          </Grid>
+      <GenericTable<Booking>
+        data={rows}
+        columns={columns}
+        filename="booking-list.csv"
+        onView={handleView}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography><b>Address:</b></Typography>
-            <Typography color="text.secondary">{booking.address}</Typography>
-          </Grid>
+      {/* ================= BOOKING DETAILS MODAL ================= */}
 
-          {/* ================= BOOKING INFO ================= */}
-          <Grid size={12}>
-            <Typography variant="h6">Booking Information</Typography>
-            <Divider sx={{ my: 1 }} />
-          </Grid>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography><b>Booking ID:</b> {booking.id}</Typography>
-            <Typography><b>Check-in:</b> {booking.checkIn}</Typography>
-            <Typography><b>Check-out:</b> {booking.checkOut}</Typography>
-          </Grid>
+        <DialogTitle
+          sx={{
+            backgroundColor: '#7b1e24',
+            color: 'white',
+            fontWeight: 600
+          }}
+        >
+          Booking Details
+        </DialogTitle>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography>
-              <b>Status:</b>{' '}
-              <Chip label={booking.status} color="primary" size="small" />
-            </Typography>
-            <Typography><b>Source:</b> {booking.source}</Typography>
-            <Typography><b>Created On:</b> {booking.createdOn}</Typography>
-          </Grid>
+        <DialogContent sx={{ p: 4 }}>
 
-          {/* ================= ROOM INFO ================= */}
-          <Grid size={12}>
-            <Typography variant="h6">Room Details</Typography>
-            <Divider sx={{ my: 1 }} />
-          </Grid>
+          {selected && (
+            <Stack spacing={2}>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography><b>Room Type:</b> {booking.roomType}</Typography>
-            <Typography><b>Room No:</b> {booking.roomNo}</Typography>
-            <Typography><b>Guests:</b> {booking.guests}</Typography>
-          </Grid>
+              <Typography variant="h6">Guest Information</Typography>
+              <Typography>Name: {selected.guest}</Typography>
+              <Typography>Email: john@example.com</Typography>
+              <Typography>Phone: +91 9876543210</Typography>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography><b>Rate/Night:</b> ₹ {booking.rate}</Typography>
-            <Typography><b>Nights:</b> {booking.nights}</Typography>
-            <Typography><b>Room Cost:</b> ₹ {roomTotal}</Typography>
-          </Grid>
+              <Typography variant="h6">Booking Information</Typography>
+              <Typography>Booking ID: {selected.id}</Typography>
+              <Typography>Check-in: {selected.checkIn}</Typography>
+              <Typography>Check-out: {selected.checkOut}</Typography>
 
-          {/* ================= SERVICES ================= */}
-          <Grid size={12}>
-            <Typography variant="h6">Additional Services</Typography>
-            <Divider sx={{ my: 1 }} />
-          </Grid>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Typography>Status:</Typography>
+                <Chip
+                  label={selected.status}
+                  color={getStatusColor(selected.status) as any}
+                  size="small"
+                />
+              </Stack>
 
-          <Grid size={12}>
-            {booking.services.map((s) => (
-              <Typography key={s.name}>
-                ✓ {s.name} – ₹ {s.price}
-              </Typography>
-            ))}
-            <Typography mt={1}>
-              <b>Total Services:</b> ₹ {servicesTotal}
-            </Typography>
-          </Grid>
+              <Typography variant="h6">Room Details</Typography>
+              <Typography>Room Type: {selected.room}</Typography>
+              <Typography>Room Number: 101</Typography>
 
-          {/* ================= PAYMENT ================= */}
-          <Grid size={12}>
-            <Typography variant="h6">Payment Information</Typography>
-            <Divider sx={{ my: 1 }} />
-          </Grid>
+              <Typography variant="h6">Payment</Typography>
+              <Typography>Total Amount: ₹14,300</Typography>
+              <Typography>Paid: ₹10,000</Typography>
+              <Typography>Balance: ₹4,300</Typography>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography><b>Total Amount:</b> ₹ {booking.totalAmount}</Typography>
-            <Typography><b>Paid:</b> ₹ {booking.paid}</Typography>
-            <Typography><b>Balance:</b> ₹ {booking.totalAmount - booking.paid}</Typography>
-          </Grid>
+              <Typography variant="h6">Notes</Typography>
+              <Typography>- Guest requested early check-in</Typography>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography><b>Payment Mode:</b> {booking.paymentMode}</Typography>
-            <Typography>
-              <b>Status:</b>{' '}
-              <Chip label={booking.paymentStatus} color="warning" size="small" />
-            </Typography>
-          </Grid>
+              <Stack direction="row" spacing={2} mt={2}>
+                <Button variant="contained">
+                  Edit
+                </Button>
 
-          {/* ================= NOTES ================= */}
-          <Grid size={12}>
-            <Typography variant="h6">Notes / Special Requests</Typography>
-            <Divider sx={{ my: 1 }} />
-            {booking.notes.map((note, i) => (
-              <Typography key={i}>• {note}</Typography>
-            ))}
-          </Grid>
-        </Grid>
-      </CardContent>
+                <Button color="error" variant="contained">
+                  Cancel Booking
+                </Button>
 
-      {/* ================= ACTIONS ================= */}
-      <CardActions sx={{ justifyContent: 'center' }}>
-        <Stack direction="row" spacing={2}>
-          <Button variant="outlined" startIcon={<Edit />}>Edit</Button>
-          <Button color="error" variant="outlined" startIcon={<Trash />}>Cancel</Button>
-          <Button variant="outlined" startIcon={<Printer />}>Print</Button>
-          <Button variant="outlined" startIcon={<Sms />}>Email</Button>
-        </Stack>
-      </CardActions>
-    </Card>
+                <Button variant="outlined">
+                  Print Invoice
+                </Button>
+              </Stack>
+
+            </Stack>
+          )}
+
+        </DialogContent>
+
+      </Dialog>
+    </>
   );
 }

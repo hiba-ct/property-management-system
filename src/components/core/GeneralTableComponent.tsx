@@ -13,7 +13,8 @@ import {
   Menu,
   MenuItem,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
+  IconButton
 } from '@mui/material';
 
 import {
@@ -27,10 +28,10 @@ import {
   VisibilityState
 } from '@tanstack/react-table';
 
+import { Eye, Edit, Trash, Layer } from 'iconsax-reactjs';
+
 // project imports
 import { CSVExport, DebouncedInput, TablePagination } from 'components/third-party/react-table';
-import IconButton from 'components/@extended/IconButton';
-import { Layer } from 'iconsax-reactjs';
 
 /* ================= PROPS ================= */
 
@@ -38,8 +39,13 @@ interface GenericTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
   filename?: string;
+
+  onView?: (row: T) => void;
+  onEdit?: (row: T) => void;
+  onDelete?: (row: T) => void;
+
   meta?: {
-    extraContent?: React.ReactNode; // ✅ legend / summary slot
+    extraContent?: React.ReactNode;
   };
 }
 
@@ -49,15 +55,60 @@ export default function GenericTable<T>({
   data,
   columns,
   filename = 'table.csv',
+  onView,
+  onEdit,
+  onDelete,
   meta
 }: GenericTableProps<T>) {
+
   const [globalFilter, setGlobalFilter] = useState('');
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  /* ================= ACTION COLUMN ================= */
+
+  const enhancedColumns: ColumnDef<T>[] = useMemo(() => {
+
+    if (!onView && !onEdit && !onDelete) return columns;
+
+    return [
+      ...columns,
+      {
+        id: 'actions',
+        header: 'Actions',
+        cell: ({ row }) => (
+          <Stack direction="row" spacing={1}>
+
+            {onView && (
+              <IconButton onClick={() => onView(row.original)}>
+                <Eye size={18} />
+              </IconButton>
+            )}
+
+            {onEdit && (
+              <IconButton onClick={() => onEdit(row.original)}>
+                <Edit size={18} />
+              </IconButton>
+            )}
+
+            {onDelete && (
+              <IconButton color="error" onClick={() => onDelete(row.original)}>
+                <Trash size={18} />
+              </IconButton>
+            )}
+
+          </Stack>
+        )
+      }
+    ];
+
+  }, [columns, onView, onEdit, onDelete]);
+
+  /* ================= TABLE ================= */
+
   const table = useReactTable({
     data,
-    columns,
+    columns: enhancedColumns,
     state: {
       globalFilter,
       columnVisibility
@@ -70,22 +121,25 @@ export default function GenericTable<T>({
     getPaginationRowModel: getPaginationRowModel()
   });
 
+  /* ================= CSV HEADERS ================= */
+
   const headers = useMemo(
     () =>
-      columns
+      enhancedColumns
         .filter((c): c is ColumnDef<T> & { accessorKey: string } => 'accessorKey' in c)
         .map((c) => ({
           label: String(c.header),
           key: c.accessorKey
         })),
-    [columns]
+    [enhancedColumns]
   );
 
   /* ================= RENDER ================= */
 
   return (
     <>
-      {/* ================= SEARCH + EXPORT + LAYER ================= */}
+      {/* SEARCH + EXPORT + COLUMN TOGGLE */}
+
       <Stack direction="row" justifyContent="space-between" sx={{ p: 2 }}>
         <DebouncedInput
           value={globalFilter}
@@ -97,14 +151,14 @@ export default function GenericTable<T>({
         <Stack direction="row" spacing={1}>
           <CSVExport data={data} headers={headers} filename={filename} />
 
-          {/* COLUMN VISIBILITY */}
           <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
-            <Layer />
+            <Layer size={18} />
           </IconButton>
         </Stack>
       </Stack>
 
-      {/* ================= COLUMN VISIBILITY MENU ================= */}
+      {/* COLUMN VISIBILITY MENU */}
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -125,9 +179,11 @@ export default function GenericTable<T>({
         ))}
       </Menu>
 
-      {/* ================= TABLE ================= */}
+      {/* TABLE */}
+
       <TableContainer component={Paper}>
         <Table size="small">
+
           <TableHead sx={{ bgcolor: 'primary.main' }}>
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>
@@ -151,10 +207,12 @@ export default function GenericTable<T>({
               </TableRow>
             ))}
           </TableBody>
+
         </Table>
       </TableContainer>
 
-      {/* ================= EXTRA CONTENT (LEGEND) ================= */}
+      {/* EXTRA CONTENT */}
+
       {meta?.extraContent && (
         <Box sx={{ px: 2, py: 2 }}>
           {meta.extraContent}
@@ -163,7 +221,8 @@ export default function GenericTable<T>({
 
       <Divider />
 
-      {/* ================= PAGINATION ================= */}
+      {/* PAGINATION */}
+
       <Box sx={{ p: 2 }}>
         <TablePagination
           setPageSize={table.setPageSize}
