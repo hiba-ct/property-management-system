@@ -16,6 +16,7 @@ import DashboardLayout from 'layout/Dashboard';
 
 
 
+
 // DASHBOARD
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
@@ -25,6 +26,10 @@ const DashboardFinance = Loadable(lazy(() => import('pages/dashboard/finance')))
 const BookingPage = Loadable(lazy(() => import('pages/pms/booking/create')));
 const BookingCalendar = Loadable(lazy(() => import('pages/pms/booking/calendar')));
 const BookingDetails = Loadable(lazy(() => import('pages/pms/booking/details')));
+// PMS/accounts/masters/ledger
+const Ledger = Loadable(lazy(() => import('pages/pms/accounts/masters/ledger')));
+// PMS/accounts/masters/bankaccount
+const BankAccount = Loadable(lazy(() => import('pages/pms/accounts/masters/bankAccount')));
 
 //PMS/rooms
 const RoomTypesPage = Loadable(lazy(() => import('pages/rooms/types')));
@@ -96,6 +101,16 @@ const MainRoutes = {
         {
           path: 'bookings/details',
           element: <BookingDetails />
+        },
+
+          /* ================= ACCOUNTS ================= */
+           {
+          path: 'accounts/masters/ledger',
+          element: <Ledger />       // ✅ Form + List toggle
+        },
+          {
+          path: 'accounts/masters/bankaccount',
+          element: <BankAccount />       // ✅ Form + List toggle
         },
 /*================================== ROOMS & INVENTORY MANAGEMENT ==============================*/
          {

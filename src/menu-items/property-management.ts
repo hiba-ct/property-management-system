@@ -13,7 +13,8 @@ import {
   Chart,
   Setting2,
   DocumentText,
-  AddSquare
+  AddSquare,
+  ArchiveBook
 } from 'iconsax-reactjs';
 
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
@@ -44,7 +45,10 @@ const icons = {
   maintenance: DocumentText,
 
   reports: Chart,
-  settings: Setting2
+  settings: Setting2,
+
+  accounts: Wallet2,
+  ledger: ArchiveBook,
 };
 
 /* ================= PROPERTY MANAGEMENT ================= */
@@ -88,6 +92,107 @@ const propertyManagement: NavItemType = {
       ]
     },
 
+/* ================= ACCOUNTS ================= */
+  {
+    id: 'accounts',
+    title: 'Accounts',
+    type: 'collapse',
+    icon: icons.accounts,
+    children: [
+        {
+          id: 'masters',
+          title: 'Masters',
+          type: 'collapse',
+          //icon: icons.dashboard,
+          children: [
+            {
+              id: 'ledger',
+              title: 'Ledger / Party',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/pms/accounts/masters/ledger',
+              target: false
+            },
+              {
+              id: 'bankaccount',
+              title: 'Bank Account',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/pms/accounts/masters/bankaccount',
+              target: false
+            }
+          ]
+        },
+        {
+          id: 'transactions',
+          title: 'Transactions',
+          type: 'collapse',
+          children: [
+            {
+              id: 'cashpayments',
+              title: 'Cash Payments',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/CP/create'
+            },
+            {
+              id: 'cashreceipts',
+              title: 'Cash Receipts',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/CR/create'
+            },
+            {
+              id: 'bankpayments',
+              title: 'Bank Payments',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/BP/create'
+            },
+            {
+              id: 'bankreceipts',
+              title: 'Bank Receipts',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/BR/create'
+            },
+             {
+              id: 'loanpayment',
+              title: 'Loan Payment',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/LP/create'
+            },
+            {
+              id: 'debitnote',
+              title: 'Debit Note',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/DN/create'
+            },
+            {
+              id: 'creditnote',
+              title: 'Credit Note',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/CN/create'
+            },
+            {
+              id: 'journalvoucher',
+              title: 'Journal Voucher',
+              type: 'item',
+              icon: icons.ledger,
+              url: '/accounts/transactions/payment/JV/create'
+            },
+            
+          
+            
+
+          ]
+        },
+        
+    ]
+},
     /* ================= ROOM & INVENTORY ================= */
     {
       id: 'room-inventory',

@@ -1,46 +1,69 @@
-import { TextField, MenuItem } from '@mui/material';
-import { FormikProps, getIn } from 'formik';
+import React from "react";
+import { Stack, InputLabel, TextField, Autocomplete } from "@mui/material";
+import { FormikProps } from "formik";
 
-interface Option {
+type OptionType = {
   label: string;
-  value: string | number;
-}
+  value: any;
+};
 
-interface CommonSelectInputProps {
-  formik: FormikProps<any>;
-  name: string;
-  label: string;
-  options: Option[];
-}
+type Props<FormValues> = {
+  formik: FormikProps<FormValues>;
+  name: keyof FormValues & string;
+  label?: string;
+  options: OptionType[];
+  placeholder?: string;
+  fullWidth?: boolean;
+};
 
-export default function CommonSelectInput({
+function CommonSelectInput<FormValues>({
   formik,
   name,
   label,
-  options
-}: CommonSelectInputProps) {
-  const errorText =
-    getIn(formik.touched, name) && getIn(formik.errors, name)
-      ? String(getIn(formik.errors, name))
-      : '';
+  options,
+  placeholder,
+  fullWidth
+}: Props<FormValues>) {
+
+  const fieldName = String(name);
+
+  const selected =
+    options.find((opt) => opt.value === formik.values[name]) || null;
 
   return (
-    <TextField
-      select
-      fullWidth
-      label={label}
-      name={name}
-      value={getIn(formik.values, name)}
-      onChange={formik.handleChange}
-      onBlur={formik.handleBlur}
-      error={Boolean(errorText)}
-      helperText={errorText}
-    >
-      {options.map((opt) => (
-        <MenuItem key={opt.value} value={opt.value}>
-          {opt.label}
-        </MenuItem>
-      ))}
-    </TextField>
+    <Stack sx={{ gap: 1 }}>
+
+      <InputLabel htmlFor={fieldName}>{label}</InputLabel>
+
+      <Autocomplete
+        fullWidth={fullWidth}
+        size="small"
+        options={options}
+        value={selected}
+        getOptionLabel={(option) => option.label}
+        onChange={(event, newValue) => {
+          formik.setFieldValue(fieldName, newValue ? newValue.value : "");
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder={placeholder || label}
+            error={Boolean(formik.touched[name]) && Boolean(formik.errors[name])}
+            helperText={formik.touched[name] && (formik.errors[name] as string)}
+            size="small"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                height: 38,                 // ✅ same height as text input
+              },
+              "& .MuiOutlinedInput-input": {
+                padding: "8px 12px",        // ✅ same padding
+              }
+            }}
+          />
+        )}
+      />
+    </Stack>
   );
 }
+
+export default CommonSelectInput;
