@@ -75,7 +75,7 @@ const Page = ({
                   <Stack direction="row" spacing={1}>
                     <Button
                       variant="contained"
-                      color="secondary"
+                      color="primary"
                       startIcon={<Add />}
                       size="small"
                       onClick={() => setShowTable(false)}
@@ -85,7 +85,7 @@ const Page = ({
 
                     <Button
                       variant="contained"
-                      color="secondary"
+                      color="primary"
                       startIcon={<Book />}
                       size="small"
                       onClick={() => setShowTable(true)}

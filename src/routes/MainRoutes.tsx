@@ -3,192 +3,145 @@ import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 
 
+/* ================= DASHBOARD ================= */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// DASHBOARD
-// render - dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
 const DashboardAnalytics = Loadable(lazy(() => import('pages/dashboard/analytics')));
 const DashboardFinance = Loadable(lazy(() => import('pages/dashboard/finance')));
-// PMS/bookig
+
+/* ================= PMS BOOKINGS ================= */
+
 const BookingPage = Loadable(lazy(() => import('pages/pms/booking/create')));
 const BookingCalendar = Loadable(lazy(() => import('pages/pms/booking/calendar')));
 const BookingDetails = Loadable(lazy(() => import('pages/pms/booking/details')));
-// PMS/accounts/masters/ledger
+
+/* ================= PMS ACCOUNTS ================= */
+
 const Ledger = Loadable(lazy(() => import('pages/pms/accounts/masters/ledger')));
-// PMS/accounts/masters/bankaccount
 const BankAccount = Loadable(lazy(() => import('pages/pms/accounts/masters/bankAccount')));
 
-//PMS/rooms
+/* ================= TRANSACTIONS ================= */
+
+const Payment = Loadable(lazy(() => import('pages/pms/accounts/transactions/Payment')));
+const PaymentForm = Loadable(lazy(() => import('pages/pms/accounts/transactions/Form')));
+const PaymentList = Loadable(lazy(() => import('pages/pms/accounts/transactions/List')));
+
+/* ================= ROOMS ================= */
+
 const RoomTypesPage = Loadable(lazy(() => import('pages/rooms/types')));
 const RoomsPage = Loadable(lazy(() => import('pages/rooms/create')));
 const RoomsCleaningPage = Loadable(lazy(() => import('pages/rooms/cleaning')));
 
+/* ================= GUESTS ================= */
 
-//PMS/guests
 const GuestPage = Loadable(lazy(() => import('pages/pms/guests/create')));
 const GuestDetails = Loadable(lazy(() => import('pages/pms/guests/details')));
 const GuestFeedback = Loadable(lazy(() => import('pages/pms/guests/feedback')));
 
-//PMS/billing
+/* ================= BILLING ================= */
+
 const BillingPage = Loadable(lazy(() => import('pages/pms/billing/create')));
 const PendingPaymentPage = Loadable(lazy(() => import('pages/pms/billing/pending')));
 const InvoicePage = Loadable(lazy(() => import('pages/pms/billing/invoice')));
 
-//PMS/housekeeping
+/* ================= HOUSEKEEPING ================= */
+
 const HousekeepingPage = Loadable(lazy(() => import('pages/pms/housekeeping/create')));
 
-//PMS/amenities
+/* ================= AMENITIES ================= */
+
 const AmenitiesPage = Loadable(lazy(() => import('pages/pms/amenities/create')));
 
-//PMS/overview
+/* ================= OVERVIEW ================= */
+
 const OverviewPage = Loadable(lazy(() => import('pages/pms/overview/create')));
 
-//PMS/amenities
+/* ================= MAINTENANCE ================= */
 
-//PMS/maiteanance requests
 const MaintenanceRequestsPage = Loadable(lazy(() => import('pages/pms/maintenance/requests')));
 const MaintenanceIssuesPage = Loadable(lazy(() => import('pages/pms/maintenance/issues')));
-// ERROR
+
+/* ================= ERROR ================= */
+
 const MaintenanceError = Loadable(lazy(() => import('pages/maintenance/error/404')));
 
 const MainRoutes = {
   path: '/',
   element: <DashboardLayout />,
   children: [
-    
-        {
-          path: 'dashboard',
-          children: [
-            {
-              path: 'default',
-              element: <DashboardDefault />
-            },
-            {
-              path: 'analytics',
-              element: <DashboardAnalytics />
-            },
-            {
-              path: 'finance',
-              element: <DashboardFinance />
-            }
-          ]
-        },
+    {
+      path: 'dashboard',
+      children: [
+        { path: 'default', element: <DashboardDefault /> },
+        { path: 'analytics', element: <DashboardAnalytics /> },
+        { path: 'finance', element: <DashboardFinance /> }
+      ]
+    },
+
     /* ================= PMS ================= */
+
     {
       path: 'pms',
       children: [
-        {
-          path: 'bookings/create',
-          element: <BookingPage />       // ✅ Form + List toggle
-        },
-        {
-          path: 'bookings/calendar',
-          element: <BookingCalendar />
-        },
-        {
-          path: 'bookings/details',
-          element: <BookingDetails />
-        },
 
-          /* ================= ACCOUNTS ================= */
-           {
-          path: 'accounts/masters/ledger',
-          element: <Ledger />       // ✅ Form + List toggle
-        },
-          {
-          path: 'accounts/masters/bankaccount',
-          element: <BankAccount />       // ✅ Form + List toggle
-        },
-/*================================== ROOMS & INVENTORY MANAGEMENT ==============================*/
-         {
-          path: 'rooms/types',
-          element: <RoomTypesPage/>
-        },
+        /* BOOKINGS */
 
-         {
-          path: 'rooms/create',
-          element: <RoomsPage/>
-        },
+        { path: 'bookings/create', element: <BookingPage /> },
+        { path: 'bookings/calendar', element: <BookingCalendar /> },
+        { path: 'bookings/details', element: <BookingDetails /> },
 
-         {
-          path: 'rooms/cleaning',
-          element: <RoomsCleaningPage />
-        },
+        /* ACCOUNTS MASTERS */
 
-        /*================================== Guest MANAGEMENT ==============================*/
+        { path: 'accounts/masters/ledger', element: <Ledger /> },
+        { path: 'accounts/masters/bankaccount', element: <BankAccount /> },
 
- {
-          path: 'guests/create',
-          element: <GuestPage />
-        },
+        /* ACCOUNTS TRANSACTIONS */
 
         {
-         
-        path: '/pms/guests/details/:id',
-        element: <GuestDetails />
-},
- {
-         
-        path: '/pms/guests/feedback',
-        element: <GuestFeedback />
-},
- /*==================================  Billing MANAGEMENT ==============================*/
+          path: 'accounts/transactions/payment/:type',
+          element: <Payment />,
+          children: [
+            { path: 'create', element: <PaymentForm /> },
+            { path: 'edit/:id', element: <PaymentForm /> },
+            { path: 'list', element: <PaymentList /> }
+          ]
+        },
 
-        {
-         
-        path: '/pms/billing/create',
-        element: <BillingPage />
-},
- {
-         
-        path: '/pms/billing/pending',
-        element: <PendingPaymentPage />
-},
-{
-         
-        path: '/pms/billing/invoice',
-        element: <InvoicePage />
-},
-/*==================================HOUSEKEEPING ==============================*/
-        {
-          path: '/pms/housekeeping/create',
-          element: <HousekeepingPage />
-        },
- /*==================================AMENITIES ==============================*/
-        {
-          path: '/pms/amenities/create',
-          element: <AmenitiesPage />
-        },
-        /*==================================OVERVIEW ==============================*/
-         {
-          path: '/pms/overview/create',
-          element: <OverviewPage />
-        },
-         /*==================================MAINTENANCE REQUESTS ==============================*/
-         {
-          path: '/pms/maintenance/requests',
-          element: <MaintenanceRequestsPage />
-        },
-         {
-          path: '/pms/maintenance/issues',
-          element: <MaintenanceIssuesPage />
-        },
+        /* ROOMS */
+
+        { path: 'rooms/types', element: <RoomTypesPage /> },
+        { path: 'rooms/create', element: <RoomsPage /> },
+        { path: 'rooms/cleaning', element: <RoomsCleaningPage /> },
+
+        /* GUESTS */
+
+        { path: 'guests/create', element: <GuestPage /> },
+        { path: 'guests/details/:id', element: <GuestDetails /> },
+        { path: 'guests/feedback', element: <GuestFeedback /> },
+
+        /* BILLING */
+
+        { path: 'billing/create', element: <BillingPage /> },
+        { path: 'billing/pending', element: <PendingPaymentPage /> },
+        { path: 'billing/invoice', element: <InvoicePage /> },
+
+        /* HOUSEKEEPING */
+
+        { path: 'housekeeping/create', element: <HousekeepingPage /> },
+
+        /* AMENITIES */
+
+        { path: 'amenities/create', element: <AmenitiesPage /> },
+
+        /* OVERVIEW */
+
+        { path: 'overview/create', element: <OverviewPage /> },
+
+        /* MAINTENANCE */
+
+        { path: 'maintenance/requests', element: <MaintenanceRequestsPage /> },
+        { path: 'maintenance/issues', element: <MaintenanceIssuesPage /> }
       ]
-
-
     },
 
     { path: '*', element: <MaintenanceError /> }

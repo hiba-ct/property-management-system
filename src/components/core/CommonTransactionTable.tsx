@@ -14,6 +14,8 @@ import {
   Tooltip
 } from '@mui/material';
 
+import { useTheme } from '@mui/material/styles';
+
 import {
   flexRender,
   getCoreRowModel,
@@ -24,23 +26,22 @@ import {
   ColumnDef
 } from '@tanstack/react-table';
 
-import { CSVExport, DebouncedInput, TablePagination } from 'components/third-party/react-table';
+import {
+  CSVExport,
+  DebouncedInput,
+  TablePagination
+} from 'components/third-party/react-table';
 
 import IconButton from 'components/@extended/IconButton';
-
 import { Edit2, Trash, Printer, DocumentDownload } from 'iconsax-reactjs';
 
 import { useReactToPrint } from 'react-to-print';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ExportPDFView from 'sections/apps/invoice/export-pdf';
 
-
-
- 
-
 /* ================= TYPES ================= */
 
-interface CommonTransactionTableProps<T> {
+interface Props<T> {
   data: T[];
   setData?: React.Dispatch<React.SetStateAction<T[]>>;
   columns: ColumnDef<T>[];
@@ -58,10 +59,10 @@ export default function CommonTransactionTable<T>({
   filename = 'export.csv',
   onEdit,
   onDelete
-}: CommonTransactionTableProps<T>) {
+}: Props<T>) {
 
+  const theme = useTheme(); // 🔥 theme usage
   const [globalFilter, setGlobalFilter] = useState('');
-
   const contentRef = useRef(null);
 
   const handlePrint = useReactToPrint({
@@ -70,58 +71,57 @@ export default function CommonTransactionTable<T>({
 
   /* ================= ACTION COLUMN ================= */
 
-  const enhancedColumns: ColumnDef<T>[] = useMemo(() => {
+  const enhancedColumns: ColumnDef<T>[] = useMemo(() => [
+    ...columns,
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => {
+        const rowData = row.original;
 
-    return [
-      ...columns,
-      {
-        id: 'actions',
-        header: 'Actions',
-        cell: ({ row }) => {
+        return (
+          <Stack direction="row" spacing={1}>
 
-          const rowData = row.original;
-
-          return (
-            <Stack direction="row" spacing={1}>
-
-              {onEdit && (
-                <Tooltip title="Edit">
-                  <IconButton onClick={() => onEdit(rowData)}>
-                    <Edit2 size={18} />
-                  </IconButton>
-                </Tooltip>
-              )}
-
-              {onDelete && (
-                <Tooltip title="Delete">
-                  <IconButton color="error" onClick={() => onDelete(rowData)}>
-                    <Trash size={18} />
-                  </IconButton>
-                </Tooltip>
-              )}
-
-              <Tooltip title="Print Row">
-                <IconButton onClick={() => window.print()}>
-                  <Printer size={18} />
+            {onEdit && (
+              <Tooltip title="Edit">
+                <IconButton
+                  sx={{ color: theme.palette.primary.main }}
+                  onClick={() => onEdit(rowData)}
+                >
+                  <Edit2 size={18} />
                 </IconButton>
               </Tooltip>
+            )}
 
-            </Stack>
-          );
-        }
+            {onDelete && (
+              <Tooltip title="Delete">
+                <IconButton
+                  sx={{ color: theme.palette.error.main }}
+                  onClick={() => onDelete(rowData)}
+                >
+                  <Trash size={18} />
+                </IconButton>
+              </Tooltip>
+            )}
+
+            <Tooltip title="Print">
+              <IconButton onClick={() => window.print()}>
+                <Printer size={18} />
+              </IconButton>
+            </Tooltip>
+
+          </Stack>
+        );
       }
-    ];
-
-  }, [columns, onEdit, onDelete]);
+    }
+  ], [columns, onEdit, onDelete, theme]);
 
   /* ================= TABLE ================= */
 
   const table = useReactTable({
     data,
     columns: enhancedColumns,
-    state: {
-      globalFilter
-    },
+    state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -146,87 +146,92 @@ export default function CommonTransactionTable<T>({
 
   return (
     <>
-      {/* ===== Toolbar ===== */}
+      {/* 🔍 TOOLBAR */}
 
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
-        sx={{ p: 1 }}
+        sx={{ p: 2 }}
       >
 
         {/* Search */}
-
         <DebouncedInput
           value={globalFilter ?? ''}
           onFilterChange={(value) => setGlobalFilter(String(value))}
           placeholder={`Search ${data.length} records...`}
-          sx={{ height: 35 }}
+          sx={{ minWidth: 250 }}
         />
 
         {/* Actions */}
-<Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1}>
 
-  {/* CSV ICON BUTTON */}
+          <CSVExport data={data} headers={headers} filename={filename} />
 
- <CSVExport
-  data={data}
-  headers={headers}
-  filename={filename}
-/>
+          <PDFDownloadLink
+            document={<ExportPDFView list={data as any} />}
+            fileName={`${filename}.pdf`}
+          >
+            <Button
+              variant="contained"
+              startIcon={<DocumentDownload />}
+              sx={{
+                bgcolor: theme.palette.primary.main,
+                color: '#fff',
+                borderRadius: '8px',
+                '&:hover': {
+                  bgcolor: theme.palette.primary.dark
+                }
+              }}
+            >
+              Download
+            </Button>
+          </PDFDownloadLink>
 
-  {/* DOWNLOAD BUTTON */}
+          <Button
+            variant="outlined"
+            startIcon={<Printer />}
+            onClick={handlePrint}
+            sx={{
+              borderColor: theme.palette.primary.main,
+              color: theme.palette.primary.main,
+              borderRadius: '8px',
+              '&:hover': {
+                bgcolor: theme.palette.primary.main,
+                color: '#fff'
+              }
+            }}
+          >
+            Print
+          </Button>
 
-  <PDFDownloadLink
-    document={<ExportPDFView list={data as any} />}
-    fileName={`${filename}.pdf`}
-  >
-    <Button
-      variant="contained"
-      startIcon={<DocumentDownload />}
-      sx={{
-        borderRadius: '8px'
-      }}
-    >
-      Download
-    </Button>
-  </PDFDownloadLink>
-
-  {/* PRINT BUTTON */}
-
-  <Button
-    variant="outlined"
-    startIcon={<Printer />}
-    onClick={handlePrint}
-    sx={{
-      borderRadius: '8px'
-    }}
-  >
-    Print
-  </Button>
-
-</Stack>
-
+        </Stack>
       </Stack>
 
-      {/* ===== TABLE ===== */}
+      {/* 📊 TABLE */}
 
       <TableContainer
         component={Paper}
         ref={contentRef}
         sx={{ maxHeight: 'calc(100vh - 330px)' }}
       >
-
         <Table size="small">
 
-          <TableHead sx={{ backgroundColor: 'primary.main' }}>
+          {/* 🔥 MAROON HEADER */}
+          <TableHead
+            sx={{
+              bgcolor: theme.palette.primary.main,
+              '& th': {
+                color: '#fff',
+                fontWeight: 600,
+                borderRight: '1px solid rgba(255,255,255,0.2)'
+              }
+            }}
+          >
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableCell
-                    key={header.id}
-                    sx={{ color: 'white', fontWeight: 600 }}
-                  >
+                  <TableCell key={header.id}>
                     {flexRender(
                       header.column.columnDef.header,
                       header.getContext()
@@ -237,11 +242,10 @@ export default function CommonTransactionTable<T>({
             ))}
           </TableHead>
 
+          {/* BODY */}
           <TableBody>
-
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(
@@ -250,21 +254,17 @@ export default function CommonTransactionTable<T>({
                     )}
                   </TableCell>
                 ))}
-
               </TableRow>
             ))}
-
           </TableBody>
 
         </Table>
-
       </TableContainer>
 
       <Divider />
 
-      {/* ===== PAGINATION ===== */}
-
-      <Box sx={{ p: 1 }}>
+      {/* PAGINATION */}
+      <Box sx={{ p: 2 }}>
         <TablePagination
           setPageSize={table.setPageSize}
           setPageIndex={table.setPageIndex}
@@ -272,7 +272,6 @@ export default function CommonTransactionTable<T>({
           getPageCount={table.getPageCount}
         />
       </Box>
-
     </>
   );
 }

@@ -133,56 +133,56 @@ const propertyManagement: NavItemType = {
               title: 'Cash Payments',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/CP/create'
+              url: '/pms/accounts/transactions/payment/CP/create'
             },
             {
               id: 'cashreceipts',
               title: 'Cash Receipts',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/CR/create'
+              url: '/pms/accounts/transactions/payment/CR/create'
             },
             {
               id: 'bankpayments',
               title: 'Bank Payments',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/BP/create'
+              url: '/pms/accounts/transactions/payment/BP/create'
             },
             {
               id: 'bankreceipts',
               title: 'Bank Receipts',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/BR/create'
+              url: '/pms/accounts/transactions/payment/BR/create'
             },
              {
               id: 'loanpayment',
               title: 'Loan Payment',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/LP/create'
+              url: '/pms/accounts/transactions/payment/LP/create'
             },
             {
               id: 'debitnote',
               title: 'Debit Note',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/DN/create'
+              url: '/pms/accounts/transactions/payment/DN/create'
             },
             {
               id: 'creditnote',
               title: 'Credit Note',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/CN/create'
+              url: '/pms/accounts/transactions/payment/CN/create'
             },
             {
               id: 'journalvoucher',
               title: 'Journal Voucher',
               type: 'item',
               icon: icons.ledger,
-              url: '/accounts/transactions/payment/JV/create'
+              url: '/pms/accounts/transactions/payment/JV/create'
             },
             
           

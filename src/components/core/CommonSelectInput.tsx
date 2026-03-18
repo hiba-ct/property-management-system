@@ -1,6 +1,7 @@
 import React from "react";
 import { Stack, InputLabel, TextField, Autocomplete } from "@mui/material";
 import { FormikProps } from "formik";
+import get from "lodash/get";
 
 type OptionType = {
   label: string;
@@ -9,7 +10,7 @@ type OptionType = {
 
 type Props<FormValues> = {
   formik: FormikProps<FormValues>;
-  name: keyof FormValues & string;
+  name: string; // ✅ FIXED
   label?: string;
   options: OptionType[];
   placeholder?: string;
@@ -25,10 +26,14 @@ function CommonSelectInput<FormValues>({
   fullWidth
 }: Props<FormValues>) {
 
-  const fieldName = String(name);
+  const fieldName = name;
+
+  const value = get(formik.values, fieldName);
+  const error = get(formik.errors, fieldName);
+  const touched = get(formik.touched, fieldName);
 
   const selected =
-    options.find((opt) => opt.value === formik.values[name]) || null;
+    options.find((opt) => opt.value === value) || null;
 
   return (
     <Stack sx={{ gap: 1 }}>
@@ -48,17 +53,9 @@ function CommonSelectInput<FormValues>({
           <TextField
             {...params}
             placeholder={placeholder || label}
-            error={Boolean(formik.touched[name]) && Boolean(formik.errors[name])}
-            helperText={formik.touched[name] && (formik.errors[name] as string)}
+            error={Boolean(touched && error)}
+            helperText={touched && error}
             size="small"
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                height: 38,                 // ✅ same height as text input
-              },
-              "& .MuiOutlinedInput-input": {
-                padding: "8px 12px",        // ✅ same padding
-              }
-            }}
           />
         )}
       />

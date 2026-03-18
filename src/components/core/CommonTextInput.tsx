@@ -5,20 +5,25 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers';
+import get from 'lodash/get'; // ✅ IMPORTANT
 
-type InputTypes = 'text' | 'password' | 'number' | 'date' | 'datetime-local' | 'time' | 'monthpicker' ;
+type InputTypes =
+  | 'text'
+  | 'password'
+  | 'number'
+  | 'date'
+  | 'datetime-local'
+  | 'time'
+  | 'monthpicker';
 
 type CommonTextInputProps<FormValues> = {
   formik: FormikProps<FormValues>;
   type?: InputTypes;
-  name: keyof FormValues & string ;
+  name: string; // ✅ FIXED
   label?: string;
   placeholder?: string;
   fullWidth?: boolean;
-  [key: string]: any;
-  
 } & Omit<TextFieldProps, 'name' | 'value' | 'onChange' | 'onBlur'>;
-
 
 function CommonTextInput<FormValues>({
   formik,
@@ -29,86 +34,76 @@ function CommonTextInput<FormValues>({
   fullWidth,
   ...rest
 }: CommonTextInputProps<FormValues>) {
-  const fieldName = String(name);
+
+  const fieldName = name;
+
+  // ✅ SAFE ACCESS (important for dynamic fields)
+  const value = get(formik.values, fieldName);
+  const error = get(formik.errors, fieldName);
+  const touched = get(formik.touched, fieldName);
 
   return (
     <Stack sx={{ gap: 1 }}>
       <InputLabel htmlFor={fieldName}>{label}</InputLabel>
 
-      
+      {/* TIME PICKER */}
+      {type === 'time' ? (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <TimePicker
+            ampm
+            value={value ? new Date(value) : null}
+            onChange={(newValue) =>
+              formik.setFieldValue(
+                fieldName,
+                newValue ? newValue.toISOString() : ''
+              )
+            }
+            slotProps={{
+              textField: {
+                fullWidth,
+                size: 'small',
+                error: Boolean(touched && error),
+                helperText: touched && error,
+              }
+            }}
+          />
+        </LocalizationProvider>
 
-{type === 'time' ? (
-  <LocalizationProvider dateAdapter={AdapterDateFns}>
-    <TimePicker
-      ampm                              // 👈 shows AM/PM
-      value={
-        formik.values[name]
-          ? new Date(formik.values[name] as any)
-          : null
-      }
-      onChange={(newValue) =>
-        formik.setFieldValue(
-          fieldName,
-          newValue ? newValue.toISOString() : ''
-        )
-      }
-      slotProps={{
-        textField: {
-          fullWidth,
-          size: 'small',
-          error: Boolean(formik.touched[name]) && Boolean(formik.errors[name]),
-          helperText: formik.touched[name] && (formik.errors[name] as string),
-          sx: {
-            '& .MuiOutlinedInput-input': { padding: '8px 12px' },
-            '& .MuiIconButton-root': { padding: 4, marginLeft: -2 },
-            '& .MuiInputAdornment-root': { maxWidth: '23px' },
-          }
-        }
-      }}
-    />
-  </LocalizationProvider>
-) : type === 'date' ? (
-  <LocalizationProvider dateAdapter={AdapterDateFns}>
-    <DatePicker
-      format="dd/MM/yyyy"
-      value={
-        formik.values[name]
-          ? new Date(formik.values[name] as any)
-          : null
-      }
-      onChange={(newValue) =>
-        formik.setFieldValue(
-          fieldName,
-          newValue ? newValue.toISOString().split('T')[0] : ''
-        )
-      }
-      slotProps={{
-        textField: {
-          fullWidth,
-          size: 'small',
-          error: Boolean(formik.touched[name]) && Boolean(formik.errors[name]),
-          helperText: formik.touched[name] && (formik.errors[name] as string),
-          sx: {
-            '& .MuiOutlinedInput-input': { padding: '8px 12px' },
-            '& .MuiIconButton-root': { padding: 4, marginLeft: -2 },
-            '& .MuiInputAdornment-root': { maxWidth: '23px' },
-          }
-        }
-      }}
-    />
-  </LocalizationProvider>
-      ) :
-      type === 'monthpicker' ? (
+      ) : type === 'date' ? (
+
+        /* DATE PICKER */
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            format="dd/MM/yyyy"
+            value={value ? new Date(value) : null}
+            onChange={(newValue) =>
+              formik.setFieldValue(
+                fieldName,
+                newValue
+                  ? newValue.toISOString().split('T')[0]
+                  : ''
+              )
+            }
+            slotProps={{
+              textField: {
+                fullWidth,
+                size: 'small',
+                error: Boolean(touched && error),
+                helperText: touched && error,
+              }
+            }}
+          />
+        </LocalizationProvider>
+
+      ) : type === 'monthpicker' ? (
+
+        /* MONTH PICKER */
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             views={['year', 'month']}
             openTo="month"
             format="MM/yyyy"
-            value={
-              formik.values[name]
-                ? new Date(formik.values[name] as any)
-                : null
-            }
+            value={value ? new Date(value) : null}
             onChange={(newValue) =>
               formik.setFieldValue(
                 fieldName,
@@ -125,41 +120,43 @@ function CommonTextInput<FormValues>({
               textField: {
                 fullWidth,
                 size: 'small',
-                error: Boolean(formik.touched[name]) && Boolean(formik.errors[name]),
-                helperText: formik.touched[name] && (formik.errors[name] as string),
-                sx: {
-                  '& .MuiOutlinedInput-input': { padding: '8px 12px' },
-                  '& .MuiIconButton-root': { padding: 4, marginLeft: -2 },
-                  '& .MuiInputAdornment-root': { maxWidth: '23px' },
-                },
-              },
+                error: Boolean(touched && error),
+                helperText: touched && error,
+              }
             }}
           />
         </LocalizationProvider>
+
       ) : (
+
+        /* NORMAL INPUT */
         <TextField
           id={fieldName}
           type={type || 'text'}
           name={fieldName}
           placeholder={placeholder || label}
-          value={formik.values[name] ?? ''}
+          value={value ?? ''}
           onChange={(e) => {
             let val: any = e.target.value;
+
             if (type === 'number') {
               val = val === '' ? '' : Number(val);
             }
+
             formik.setFieldValue(fieldName, val);
           }}
           onBlur={formik.handleBlur}
-          error={Boolean(formik.touched[name]) && Boolean(formik.errors[name])}
-          helperText={formik.touched[name] && (formik.errors[name] as string)}
+          error={Boolean(touched && error)}
+          helperText={touched && error}
           fullWidth={fullWidth}
-          size="small"                 // 👈 matches ~40px height
+          size="small"
           variant="outlined"
-          InputLabelProps={type === 'datetime-local' ? { shrink: true } : undefined}
-          // No need to force height here; size="small" handles it
+          InputLabelProps={
+            type === 'datetime-local' ? { shrink: true } : undefined
+          }
           {...rest}
         />
+
       )}
     </Stack>
   );
