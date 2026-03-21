@@ -128,41 +128,22 @@ const propertyManagement: NavItemType = {
           title: 'Transactions',
           type: 'collapse',
           children: [
+           
             {
-              id: 'cashpayments',
-              title: 'Cash Payments',
+              id: 'payments',
+              title: 'Payments',
               type: 'item',
               icon: icons.ledger,
-              url: '/pms/accounts/transactions/payment/CP/create'
-            },
-            {
-              id: 'cashreceipts',
-              title: 'Cash Receipts',
-              type: 'item',
-              icon: icons.ledger,
-              url: '/pms/accounts/transactions/payment/CR/create'
+              url: '/pms/accounts/transactions/payment/PY/create'
             },
             {
-              id: 'bankpayments',
-              title: 'Bank Payments',
+              id: 'payment receipts',
+              title: 'Payment Receipts',
               type: 'item',
               icon: icons.ledger,
-              url: '/pms/accounts/transactions/payment/BP/create'
+              url: '/pms/accounts/transactions/payment/PR/create'
             },
-            {
-              id: 'bankreceipts',
-              title: 'Bank Receipts',
-              type: 'item',
-              icon: icons.ledger,
-              url: '/pms/accounts/transactions/payment/BR/create'
-            },
-             {
-              id: 'loanpayment',
-              title: 'Loan Payment',
-              type: 'item',
-              icon: icons.ledger,
-              url: '/pms/accounts/transactions/payment/LP/create'
-            },
+             
             {
               id: 'debitnote',
               title: 'Debit Note',

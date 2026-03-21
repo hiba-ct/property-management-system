@@ -19,27 +19,16 @@ const Payment = () => {
 
   // 🔥 DYNAMIC NAME
   const pageName =
-    type === "CP"
-      ? "Cash Payment"
-      : type === "CR"
-      ? "Cash Receipt"
-      : type === "BP"
-      ? "Bank Payment"
-      : type === "BR"
-      ? "Bank Receipt"
-      : type === "LP"
-      ? "Loan Payment"
-      : type === "CCP"
-      ? "Cheque Payment"
-      : type === "CCR"
-      ? "Cheque Receipt"
-      : type === "DN"
+    type === "DN"
       ? "Debit Note"
       : type === "CN"
       ? "Credit Note"
       : type === "JV"
       ? "Journal Voucher"
-      : "Payment";
+      : type === "PR"
+      ? "Payment Reciept"
+      :"Payment";
+      
 
   return (
     <Grid container spacing={2}>
@@ -109,7 +98,7 @@ const Payment = () => {
           </CardActions>
 
           {/* CONTENT */}
-          <Outlet context={{ type }} />
+         <Outlet key={type} context={{ type }} />
 
         </MainCard>
       </Grid>

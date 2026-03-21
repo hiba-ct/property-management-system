@@ -2,12 +2,17 @@ import Grid from "@mui/material/Grid";
 import {
   Box,
   Divider,
-  ToggleButton,
-  ToggleButtonGroup,
+  Tabs,
+  Tab,
   IconButton
 } from "@mui/material";
 import { FieldArray } from "formik";
-import { Add, Trash } from "iconsax-reactjs";
+import {
+  Add,
+  Trash,
+  DocumentText,
+  Chart
+} from "iconsax-reactjs";
 import { useTheme } from "@mui/material/styles";
 
 import CommonSelectInput from "components/core/CommonSelectInput";
@@ -16,44 +21,50 @@ import CommonDesBox from "components/core/CommonDesBox";
 import FileUpload from "components/core/FileUpload";
 import SignatureModal from "components/modal/signature/SignatureModal";
 
+/* OPTIONS */
 const ledgerOptions = [
   { label: "Sales", value: "sales" },
   { label: "Purchase", value: "purchase" }
 ];
 
 export default function Content({ formik }: any) {
-  const theme = useTheme(); // 🔥 IMPORTANT
+  const theme = useTheme();
 
   return (
     <div>
+
       <Divider sx={{ mt: 2 }} />
 
-      {/* SINGLE / MULTIPLE */}
-      <Box sx={{ mt: 2 }}>
-        <ToggleButtonGroup
+      {/* 🔥 SINGLE / MULTIPLE WITH ICON */}
+      <Box sx={{ mt: 2, borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
           value={formik.values.mode}
-          exclusive
-          onChange={(e, val) => val && formik.setFieldValue("mode", val)}
-          size="small"
-          sx={{
-            "& .MuiToggleButton-root": {
-              borderColor: theme.palette.primary.main
-            },
-            "& .MuiToggleButton-root.Mui-selected": {
-              bgcolor: theme.palette.primary.main,
-              color: "#fff",
-              "&:hover": {
-                bgcolor: theme.palette.primary.dark
-              }
+          onChange={(e, val) => {
+            formik.setFieldValue("mode", val);
+
+            if (val === "single") {
+              formik.setFieldValue("LedgerRows", [
+                { ledger: "", amount: "" }
+              ]);
             }
           }}
         >
-          <ToggleButton value="single">Single</ToggleButton>
-          <ToggleButton value="multiple">Multiple</ToggleButton>
-        </ToggleButtonGroup>
+          <Tab
+            icon={<DocumentText size={18} />}
+            iconPosition="start"
+            label="Single"
+            value="single"
+          />
+          <Tab
+            icon={<Chart size={18} />}
+            iconPosition="start"
+            label="Multiple"
+            value="multiple"
+          />
+        </Tabs>
       </Box>
 
-      {/* SINGLE MODE */}
+      {/* ===== SINGLE ===== */}
       {formik.values.mode === "single" && (
         <Grid container spacing={1} sx={{ mt: 2 }}>
           <Grid size={{ xs: 12, md: 8 }}>
@@ -76,18 +87,18 @@ export default function Content({ formik }: any) {
         </Grid>
       )}
 
-      {/* MULTIPLE MODE */}
+      {/* ===== MULTIPLE ===== */}
       {formik.values.mode === "multiple" && (
         <FieldArray name="LedgerRows">
           {({ push, remove }) => (
             <Box sx={{ mt: 2 }}>
-              {/* HEADER */}
+
               <Box
                 sx={{
                   display: "grid",
                   gridTemplateColumns: "50px 1fr 200px 50px",
-                  bgcolor: theme.palette.primary.main, // ✅ FIXED
-                  color: theme.palette.primary.contrastText,
+                  bgcolor: theme.palette.primary.main,
+                  color: "#fff",
                   p: 1,
                   borderRadius: 1
                 }}
@@ -98,7 +109,6 @@ export default function Content({ formik }: any) {
                 <div></div>
               </Box>
 
-              {/* ROWS */}
               {formik.values.LedgerRows.map((row: any, index: number) => (
                 <Box
                   key={index}
@@ -106,8 +116,6 @@ export default function Content({ formik }: any) {
                     display: "grid",
                     gridTemplateColumns: "50px 1fr 200px 50px",
                     gap: 1,
-                    alignItems: "center",
-                    borderBottom: "1px solid #eee",
                     p: 1
                   }}
                 >
@@ -125,56 +133,33 @@ export default function Content({ formik }: any) {
                     type="number"
                   />
 
-                  <IconButton
-                    sx={{ color: theme.palette.error.main }}
-                    onClick={() => {
-                      if (formik.values.LedgerRows.length > 1) {
-                        remove(index);
-                      }
-                    }}
-                  >
+                  <IconButton onClick={() => remove(index)}>
                     <Trash size={18} />
                   </IconButton>
                 </Box>
               ))}
 
-              {/* ADD BUTTON */}
-              <Box sx={{ mt: 1 }}>
-                <IconButton
-                  sx={{
-                    bgcolor: theme.palette.primary.main,
-                    color: "#fff",
-                    "&:hover": {
-                      bgcolor: theme.palette.primary.dark
-                    }
-                  }}
-                  onClick={() => push({ ledger: "", amount: "" })}
-                >
-                  <Add />
-                </IconButton>
-              </Box>
+              <IconButton onClick={() => push({ ledger: "", amount: "" })}>
+                <Add />
+              </IconButton>
+
             </Box>
           )}
         </FieldArray>
       )}
 
-      {/* BOTTOM SECTION */}
+      {/* ===== FOOTER ===== */}
       <Grid container spacing={1} sx={{ mt: 2 }}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <CommonDesBox
-            name="narration"
-            label="Narration"
-            formik={formik}
-            multiline
-            rows={3}
-          />
+
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <CommonDesBox name="narration" label="Narration" formik={formik}multiline rows={3} />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, lg: 3 }}>
           <FileUpload name="file" label="Upload File" />
         </Grid>
 
-        <Grid size={{ xs: 12, md: 3 }}>
+        <Grid size={{ xs: 12, lg: 3 }}>
           <SignatureModal
             value={formik.values.signatureImage}
             onChange={(val) =>
@@ -182,7 +167,9 @@ export default function Content({ formik }: any) {
             }
           />
         </Grid>
+
       </Grid>
+
     </div>
   );
 }

@@ -54,9 +54,8 @@ export default function Form() {
 
   return (
 
-    <Card >
-
-      {/* HEADER */}
+   
+      
 
      
       <form onSubmit={formik.handleSubmit}>
@@ -155,7 +154,7 @@ export default function Form() {
 
       </form>
 
-    </Card>
+   
 
   );
 }
